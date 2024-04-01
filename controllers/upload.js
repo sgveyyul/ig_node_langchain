@@ -8,7 +8,7 @@ const { PGVectorStore } = require("@langchain/community/vectorstores/pgvector");
 const { Upload } = require("@aws-sdk/lib-storage")
 const { s3 } = require('../config/aws')
 
-const fs = require("fs");
+const { pgVectorConfig } = require("../config/pgdb")
 
 // upload file to s3 parallelly in chunks
 exports.fileUpload = async (req, res) => {
