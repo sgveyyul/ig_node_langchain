@@ -47,6 +47,7 @@ exports.gpt = async (req, res) => {
 
   if(pgVectorResult && pgVectorResult.length > 0) {
     const handleDocumentChainRes = await handleDocumentChain(chatHistory, pgVectorResult)
+    console.log('handleDocumentChainRes', handleDocumentChainRes)
     return res.status(200).json({
       success: true,
       message: {
@@ -109,6 +110,5 @@ const handleDocumentChain = async(conversation, docs) => {
   });
 
   const result = await documentChain.invoke({messages: conversation, context: docs})
-  console.log('result', result)
   return result
 }
