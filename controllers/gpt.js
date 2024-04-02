@@ -15,13 +15,9 @@ const { PGVectorStore } = require("@langchain/community/vectorstores/pgvector");
 const { PromptTemplate } = require("@langchain/core/prompts");
 const { LLMChain } = require("langchain/chains");
 
-const { pgVectorConfig } = require("../config/pgdb")
+const { chatOpenAImodel } = require('../config/gpt')
 
-const model = new ChatOpenAI({
-  modelName: "gpt-3.5-turbo",
-  temperature: 0.5,
-  verbose: true
-});
+const { pgVectorConfig } = require("../config/pgdb")
 
 const formatChatHistory = (chatHistory) => {
   const conversation = [];
@@ -75,7 +71,7 @@ exports.gpt = async (req, res) => {
 
   const prompt = new PromptTemplate({ template, inputVariables: ["question"] });
 
-  const chain = new LLMChain({ llm: embeddingsModel, prompt });
+  const chain = new LLMChain({ llm: chatOpenAImodel, prompt });
 
   const result = await chain.call({ question: question });
 
