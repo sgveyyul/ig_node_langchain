@@ -60,8 +60,10 @@ exports.fileUpload = async (req, res) => {
 			for(var i in splitDocs) {
 				for(var j in splitDocs[i]['chunks']) {
 					// console.log(splitDocs[i]['chunks'][j])
-					const vectors2 = await embeddingsModel.embedDocuments([splitDocs[i]['chunks'][j]['pageContent']]);
-					await pgvectorStore.addDocuments(splitDocs[i]['chunks'])
+					const chunkText = splitDocs[i]['chunks'][j]['pageContent'];
+					const vectors = await embeddingsModel.embedDocuments([chunkText]);
+					const vector = vectors[0];
+					await pgvectorStore.addDocuments(vector)
 					// console.log(vectors2[0]);
 				}
 			}
