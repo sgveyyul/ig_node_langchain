@@ -5,6 +5,7 @@ const cookieParser = require('cookie-parser')
 var cors = require('cors')
 
 const uploadRoutes = require('./routes/upload.js')
+const gptRoutes = require('./routes/gpt.js')
 
 const app = express()
 
@@ -20,6 +21,7 @@ app.use(cookieParser());
 const port = process.env.PORT || 8000;
 
 app.use('/api/v1', uploadRoutes);
+app.use('/api/v1', gptRoutes);
 
 // run application
 app.listen(port, () => {
