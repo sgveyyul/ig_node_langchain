@@ -44,7 +44,7 @@ exports.gpt = async (req, res) => {
   const embeddingsModel = new OpenAIEmbeddings({
     openAIApiKey: process.env.OPENAI_API_KEY, 
     batchSize: 512,
-    modelName: "text-embedding-3-small",
+    modelName: "text-embedding-3-large",
     dimensions: 512
   });
   
@@ -52,6 +52,7 @@ exports.gpt = async (req, res) => {
   const pgvectorStore = new PGVectorStore(embeddingsModel, pgVectorConfig);
 
   const pgVectorResult = await pgvectorStore.similaritySearch(question, 1)
+  console.log('pgVectorResult', pgVectorResult)
 
   if(pgVectorResult) {
     return res.status(200).json({
