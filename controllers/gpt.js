@@ -50,7 +50,7 @@ exports.gpt = async (req, res) => {
     return res.status(200).json({
       success: true,
       message: {
-        content: handleDocumentChainRes.content,
+        content: handleDocumentChainRes,
         role: 'assistant'
       },
     });
