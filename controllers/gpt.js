@@ -1,8 +1,4 @@
 require('dotenv').config();
-const { DirectoryLoader } = require("langchain/document_loaders/fs/directory");
-const { TextLoader } = require("langchain/document_loaders/fs/text");
-const { PDFLoader } = require("langchain/document_loaders/fs/pdf");
-
 const { ChatOpenAI, OpenAIEmbeddings } = require("@langchain/openai");
 const { ChatPromptTemplate, MessagesPlaceholder } = require("@langchain/core/prompts");
 const { MemoryVectorStore } = require("langchain/vectorstores/memory");
@@ -19,6 +15,7 @@ const { chatOpenAImodel } = require('../config/gpt')
 
 const { pgVectorConfig } = require("../config/pgdb")
 
+
 const formatChatHistory = (chatHistory) => {
   const conversation = [];
   chatHistory.forEach(dialogueTurn => {
@@ -33,12 +30,15 @@ const formatChatHistory = (chatHistory) => {
 
 exports.gpt = async (req, res) => {
   let chatMessages = req.body.chatMessages;
+
   const lastMessageIndex = chatMessages.length - 1;
   const lastMessage = chatMessages[lastMessageIndex];
   const question = lastMessage ? lastMessage.message : null;
   console.log('question', question)
 
   const similarityThreshold = 0.75;
+  const chatHistory = formatChatHistory(chatMessages)
+  console.log('conversation', chatHistory)
 
   const embeddingsModel = new OpenAIEmbeddings({
     openAIApiKey: process.env.OPENAI_API_KEY, 
@@ -47,7 +47,6 @@ exports.gpt = async (req, res) => {
     dimensions: 512
   });
   
-  const template = "Write a concise summary of the following. {question}"
   const pgvectorStore = new PGVectorStore(embeddingsModel, pgVectorConfig);
 
   const similarityScoreFilter = {
@@ -69,12 +68,10 @@ exports.gpt = async (req, res) => {
     });
   }
 
-  const prompt = new PromptTemplate({ template, inputVariables: ["question"] });
+  // const chain = new LLMChain({ llm: chatOpenAImodel, prompt: template });
+  // const result = await chain.call({ question: question });
 
-  const chain = new LLMChain({ llm: chatOpenAImodel, prompt });
-
-  const result = await chain.call({ question: question });
-
+  const result = prompTemplates(chatHistory)
 
   return res.status(200).json({
     success: true,
@@ -83,4 +80,18 @@ exports.gpt = async (req, res) => {
       role: 'assistant'
     },
   });
+}
+
+const prompTemplates = async(conversation) => {
+  const prompt = ChatPromptTemplate.fromMessages([
+    [
+      "system",
+      "You are a helpful assistant. Answer all questions to the best of your ability.",
+    ],
+    new MessagesPlaceholder("messages"),
+  ]);
+  const chain = prompt.pipe(chatOpenAImodel);
+  const result = await chain.invoke({messages: conversation})
+  console.log('result', result)
+  return result
 }
