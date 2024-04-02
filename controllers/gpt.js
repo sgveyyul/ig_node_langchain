@@ -75,10 +75,11 @@ exports.gpt = async (req, res) => {
 
   const result = await chain.call({ question: question });
 
+
   return res.status(200).json({
     success: true,
     message: {
-      content: result.answer,
+      content: result,
       role: 'assistant'
     },
   });
