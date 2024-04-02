@@ -46,7 +46,7 @@ exports.gpt = async (req, res) => {
     openAIApiKey: process.env.OPENAI_API_KEY, 
     batchSize: 512,
     modelName: "text-embedding-ada-002",
-    dimensions: 512
+    // dimensions: 512
   });
   
   const template = "You are a professional accountant. Answer the query in a professional way. {question}"
