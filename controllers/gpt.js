@@ -15,6 +15,8 @@ const { PGVectorStore } = require("@langchain/community/vectorstores/pgvector");
 const { PromptTemplate } = require("@langchain/core/prompts");
 const { LLMChain } = require("langchain/chains");
 
+const { pgVectorConfig } = require("../config/pgdb")
+
 const model = new ChatOpenAI({
   modelName: "gpt-3.5-turbo",
   temperature: 0.5,
@@ -40,7 +42,7 @@ exports.gpt = async (req, res) => {
   const question = lastMessage ? lastMessage.message : null;
 
   const embeddingsModel = new OpenAIEmbeddings({
-    openAIApiKey: OPENAI_API_KEY, 
+    openAIApiKey: process.env.OPENAI_API_KEY, 
     batchSize: 512,
     modelName: "text-embedding-3-small",
     dimensions: 512
