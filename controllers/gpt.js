@@ -42,6 +42,8 @@ exports.gpt = async (req, res) => {
   const question = lastMessage ? lastMessage.message : null;
   console.log('question', question)
 
+  const similarityThreshold = 0.75;
+
   const embeddingsModel = new OpenAIEmbeddings({
     openAIApiKey: process.env.OPENAI_API_KEY, 
     batchSize: 512,
@@ -52,7 +54,13 @@ exports.gpt = async (req, res) => {
   const template = "You are a professional accountant. Answer the query in a professional way. {question}"
   const pgvectorStore = new PGVectorStore(embeddingsModel, pgVectorConfig);
 
-  const pgVectorResult = await pgvectorStore.similaritySearch(question, 5)
+  const similarityScoreFilter = {
+    type: "similarityScore", // This is hypothetical and needs to be adjusted
+    condition: ">=",
+    value: similarityThreshold
+  };
+
+  const pgVectorResult = await pgvectorStore.similaritySearch(question, 5, similarityScoreFilter)
   console.log('pgVectorResult', pgVectorResult)
 
   if(pgVectorResult && pgVectorResult.length > 0) {
