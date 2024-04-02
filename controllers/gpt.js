@@ -45,7 +45,7 @@ exports.gpt = async (req, res) => {
   const embeddingsModel = new OpenAIEmbeddings({
     openAIApiKey: process.env.OPENAI_API_KEY, 
     batchSize: 512,
-    modelName: "gpt-3.5-turbo",
+    modelName: "text-embedding-ada-002",
     dimensions: 512
   });
   
