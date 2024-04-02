@@ -20,7 +20,7 @@ exports.gpt = async (req, res) => {
   const question = lastMessage ? lastMessage.message : null;
   console.log('question', question)
 
-  const similarityThreshold = 0.60;
+  const similarityThreshold = 100;
   const chatHistory = formatChatHistory(chatMessages)
   console.log('conversation', chatHistory)
 
@@ -35,15 +35,18 @@ exports.gpt = async (req, res) => {
 
   const similarityScoreFilter = {
     type: "similarityScore", // This is hypothetical and needs to be adjusted
-    condition: ">=",
+    condition: "<",
     value: similarityThreshold
   };
 
-  let pgVectorResult = await pgvectorStore.similaritySearch(question, 5, similarityScoreFilter)
+  let pgVectorResult = await pgvectorStore.similaritySearch(question, 5)
   console.log('pgVectorResult', pgVectorResult)
+  pgVectorResult.forEach((result, index) => {
+    console.log(`Result ${index + 1} Similarity Score:`, result.similarityScore);
+  });
 
   if(pgVectorResult && pgVectorResult.length > 0) {
-    const handleDocumentChainRes = await handleDocumentChain(conversation, pgVectorResult)
+    const handleDocumentChainRes = await handleDocumentChain(chatHistory, pgVectorResult)
     return res.status(200).json({
       success: true,
       message: {
