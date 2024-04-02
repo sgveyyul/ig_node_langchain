@@ -71,7 +71,7 @@ exports.gpt = async (req, res) => {
   // const chain = new LLMChain({ llm: chatOpenAImodel, prompt: template });
   // const result = await chain.call({ question: question });
 
-  const result = prompTemplates(chatHistory)
+  const result = await prompTemplates(chatHistory)
 
   return res.status(200).json({
     success: true,
