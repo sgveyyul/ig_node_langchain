@@ -40,6 +40,7 @@ exports.gpt = async (req, res) => {
   const lastMessageIndex = chatMessages.length - 1;
   const lastMessage = chatMessages[lastMessageIndex];
   const question = lastMessage ? lastMessage.message : null;
+  console.log('question', question)
 
   const embeddingsModel = new OpenAIEmbeddings({
     openAIApiKey: process.env.OPENAI_API_KEY, 
