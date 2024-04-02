@@ -55,7 +55,7 @@ exports.gpt = async (req, res) => {
   const pgVectorResult = await pgvectorStore.similaritySearch(question, 5)
   console.log('pgVectorResult', pgVectorResult)
 
-  if(pgVectorResult) {
+  if(pgVectorResult && pgVectorResult.length > 0) {
     return res.status(200).json({
       success: true,
       message: {
