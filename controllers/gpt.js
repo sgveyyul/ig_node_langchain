@@ -8,25 +8,9 @@ const { createRetrievalChain } = require("langchain/chains/retrieval");
 const { createStuffDocumentsChain } = require("langchain/chains/combine_documents");
 const { PGVectorStore } = require("@langchain/community/vectorstores/pgvector");
 
-const { PromptTemplate } = require("@langchain/core/prompts");
-const { LLMChain } = require("langchain/chains");
-
 const { chatOpenAImodel } = require('../config/gpt')
 
 const { pgVectorConfig } = require("../config/pgdb")
-
-
-const formatChatHistory = (chatHistory) => {
-  const conversation = [];
-  chatHistory.forEach(dialogueTurn => {
-    if (dialogueTurn.sender === 'gpt' || dialogueTurn.sender === 'SycipGPT') {
-      conversation.push(new AIMessage(dialogueTurn.message));
-    } else {
-      conversation.push(new HumanMessage(dialogueTurn.message));
-    }
-  });
-  return conversation;
-};
 
 exports.gpt = async (req, res) => {
   let chatMessages = req.body.chatMessages;
@@ -55,23 +39,22 @@ exports.gpt = async (req, res) => {
     value: similarityThreshold
   };
 
-  const pgVectorResult = await pgvectorStore.similaritySearch(question, 5, similarityScoreFilter)
+  let pgVectorResult = await pgvectorStore.similaritySearch(question, 5, similarityScoreFilter)
   console.log('pgVectorResult', pgVectorResult)
 
   if(pgVectorResult && pgVectorResult.length > 0) {
+    const handleDocumentChainRes = await handleDocumentChain(conversation, pgVectorResult)
     return res.status(200).json({
       success: true,
       message: {
-        content: pgVectorResult[0].pageContent,
+        content: handleDocumentChainRes.content,
         role: 'assistant'
       },
     });
   }
 
-  // const chain = new LLMChain({ llm: chatOpenAImodel, prompt: template });
-  // const result = await chain.call({ question: question });
-
-  const result = await prompTemplates(chatHistory)
+  // If bot cannot retrieve asnwers from vector database
+  const result = await handlePrompTemplatesChain(chatHistory)
 
   return res.status(200).json({
     success: true,
@@ -82,7 +65,19 @@ exports.gpt = async (req, res) => {
   });
 }
 
-const prompTemplates = async(conversation) => {
+const formatChatHistory = (chatHistory) => {
+  const conversation = [];
+  chatHistory.forEach(dialogueTurn => {
+    if (dialogueTurn.sender === 'gpt' || dialogueTurn.sender === 'SycipGPT') {
+      conversation.push(new AIMessage(dialogueTurn.message));
+    } else {
+      conversation.push(new HumanMessage(dialogueTurn.message));
+    }
+  });
+  return conversation;
+};
+
+const handlePrompTemplatesChain = async(conversation) => {
   const prompt = ChatPromptTemplate.fromMessages([
     [
       "system",
@@ -92,6 +87,25 @@ const prompTemplates = async(conversation) => {
   ]);
   const chain = prompt.pipe(chatOpenAImodel);
   const result = await chain.invoke({messages: conversation})
+  console.log('result', result)
+  return result
+}
+
+const handleDocumentChain = async(conversation, docs) => {
+  const questionAnsweringPrompt = ChatPromptTemplate.fromMessages([
+    [
+      "system",
+      "Answer the user's questions based on the below context:\n\n{context}",
+    ],
+    new MessagesPlaceholder("messages"),
+  ]);
+  
+  const documentChain = await createStuffDocumentsChain({
+    llm: chatOpenAImodel,
+    prompt: questionAnsweringPrompt,
+  });
+
+  const result = await documentChain.invoke({messages: conversation, context: docs})
   console.log('result', result)
   return result
 }
