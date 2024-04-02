@@ -47,7 +47,7 @@ exports.gpt = async (req, res) => {
     dimensions: 512
   });
   
-  const template = "You are a professional accountant. Answer the query in a professional way. {question}"
+  const template = "Write a concise summary of the following. {question}"
   const pgvectorStore = new PGVectorStore(embeddingsModel, pgVectorConfig);
 
   const similarityScoreFilter = {
