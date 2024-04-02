@@ -20,7 +20,7 @@ exports.gpt = async (req, res) => {
   const question = lastMessage ? lastMessage.message : null;
   console.log('question', question)
 
-  const similarityThreshold = 0.75;
+  const similarityThreshold = 0.60;
   const chatHistory = formatChatHistory(chatMessages)
   console.log('conversation', chatHistory)
 
