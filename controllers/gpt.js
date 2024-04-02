@@ -58,7 +58,7 @@ exports.gpt = async (req, res) => {
     return res.status(200).json({
       success: true,
       message: {
-        content: pgVectorResult[0],
+        content: pgVectorResult[0].pageContent,
         role: 'assistant'
       },
     });
