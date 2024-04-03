@@ -32,10 +32,11 @@ exports.gpt = async (req, res) => {
   console.log('conversation', chatHistory)
   
   const pgvectorStore = new PGVectorStore(embeddingsModel, pgVectorConfig);
+  let retriever = pgvectorStore.asRetriever(4)
 
   let pgVectorResult = await pgvectorStore.similaritySearch(question, 5)
   console.log('pgVectorResult', pgVectorResult)
-
+  
   const prompt = ChatPromptTemplate.fromMessages([
     [
       "system",
@@ -45,7 +46,7 @@ exports.gpt = async (req, res) => {
   ]);
 
   if(pgVectorResult && pgVectorResult.length > 0) {
-    const handleDocumentChainRes = await handleDocumentChain(prompt, chatHistory, pgVectorResult)
+    const handleDocumentChainRes = await handleDocumentChain(prompt, retriever, chatHistory, pgVectorResult)
     console.log('handleDocumentChainRes', handleDocumentChainRes)
     return res.status(200).json({
       success: true,
