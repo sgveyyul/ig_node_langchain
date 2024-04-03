@@ -14,7 +14,7 @@ const { pgVectorConfig } = require("../config/pgdb")
 
 const { ChatMessageHistory } = require("langchain/stores/message/in_memory");
 
-const type { BaseMessage } = require("@langchain/core/messages");
+const { BaseMessage } = require("@langchain/core/messages");
 const {
   RunnablePassthrough,
   RunnableSequence,
