@@ -12,7 +12,13 @@ const { chatOpenAImodel, embeddingsModel } = require('../config/gpt')
 
 const { pgVectorConfig } = require("../config/pgdb")
 
+import { ChatMessageHistory } from "langchain/stores/message/in_memory";
 
+const type { BaseMessage } = require("@langchain/core/messages");
+const {
+  RunnablePassthrough,
+  RunnableSequence,
+} = require("@langchain/core/runnables");
 
 exports.gpt = async (req, res) => {
   let chatMessages = req.body.chatMessages;
@@ -30,8 +36,16 @@ exports.gpt = async (req, res) => {
   let pgVectorResult = await pgvectorStore.similaritySearch(question, 5)
   console.log('pgVectorResult', pgVectorResult)
 
+  const prompt = ChatPromptTemplate.fromMessages([
+    [
+      "system",
+      "You are a helpful assistant. Answer all questions to the best of your ability.",
+    ],
+    new MessagesPlaceholder("messages"),
+  ]);
+
   if(pgVectorResult && pgVectorResult.length > 0) {
-    const handleDocumentChainRes = await handleDocumentChain(chatHistory, pgVectorResult)
+    const handleDocumentChainRes = await handleDocumentChain(prompt, chatHistory, pgVectorResult)
     console.log('handleDocumentChainRes', handleDocumentChainRes)
     return res.status(200).json({
       success: true,
@@ -43,7 +57,7 @@ exports.gpt = async (req, res) => {
   }
 
   // If bot cannot retrieve asnwers from vector database
-  const result = await handlePrompTemplatesChain(chatHistory)
+  const result = await handlePrompTemplatesChain(prompt, chatHistory)
 
   return res.status(200).json({
     success: true,
@@ -66,34 +80,29 @@ const formatChatHistory = (chatHistory) => {
   return conversation;
 };
 
-const handlePrompTemplatesChain = async(conversation) => {
-  const prompt = ChatPromptTemplate.fromMessages([
-    [
-      "system",
-      "You are a helpful assistant. Answer all questions to the best of your ability.",
-    ],
-    new MessagesPlaceholder("messages"),
-  ]);
+const handlePrompTemplatesChain = async(prompt, conversation) => {
   const chain = prompt.pipe(chatOpenAImodel);
   const result = await chain.invoke({messages: conversation})
   console.log('result', result)
   return result
 }
 
-const handleDocumentChain = async(conversation, docs) => {
-  const questionAnsweringPrompt = ChatPromptTemplate.fromMessages([
-    [
-      "system",
-      "Answer the user's questions based on the below context:\n\n{context}",
-    ],
-    new MessagesPlaceholder("messages"),
-  ]);
-  
+const handleDocumentChain = async(prompt, conversation, docs) => {
   const documentChain = await createStuffDocumentsChain({
     llm: chatOpenAImodel,
-    prompt: questionAnsweringPrompt,
+    prompt: prompt,
   });
 
-  const result = await documentChain.invoke({messages: conversation, context: docs})
+  const parseRetrieverInput = (params) => {
+    return params.messages[params.messages.length - 1].content;
+  };
+  
+  const retrievalChain = RunnablePassthrough.assign({
+    context: RunnableSequence.from([parseRetrieverInput, retriever]),
+  }).assign({
+    answer: documentChain,
+  });
+
+  const result = await retrievalChain.invoke({messages: conversation, context: docs})
   return result
 }
