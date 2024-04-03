@@ -87,7 +87,7 @@ const handlePrompTemplatesChain = async(conversation) => {
   return result
 }
 
-const handleDocumentChain = async(conversation, docs) => {
+const handleDocumentChain = async(retriever, conversation, docs) => {
   const prompt = ChatPromptTemplate.fromMessages([
     [
       "system",
