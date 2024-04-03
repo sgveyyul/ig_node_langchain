@@ -92,7 +92,6 @@ const handlePrompTemplatesChain = async(conversation) => {
 }
 
 const handleDocumentChain = async(retriever, conversation, docs) => {
-  let result = None
   const prompt = ChatPromptTemplate.fromMessages([
     [
       "system",
@@ -147,6 +146,6 @@ const handleDocumentChain = async(retriever, conversation, docs) => {
     answer: documentChain,
   });
 
-  result = await conversationalRetrievalChain.invoke({messages: conversation})
+  const result = await conversationalRetrievalChain.invoke({messages: conversation})
   return result
 }
