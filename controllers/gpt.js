@@ -1,16 +1,18 @@
 require('dotenv').config();
-const { ChatOpenAI, OpenAIEmbeddings } = require("@langchain/openai");
-const { ChatPromptTemplate, MessagesPlaceholder } = require("@langchain/core/prompts");
-const { MemoryVectorStore } = require("langchain/vectorstores/memory");
 const { HumanMessage, AIMessage } = require("@langchain/core/messages");
+const { ChatPromptTemplate, MessagesPlaceholder } = require("@langchain/core/prompts");
+
+const { MemoryVectorStore } = require("langchain/vectorstores/memory");
 const { createHistoryAwareRetriever } = require("langchain/chains/history_aware_retriever");
 const { createRetrievalChain } = require("langchain/chains/retrieval");
 const { createStuffDocumentsChain } = require("langchain/chains/combine_documents");
 const { PGVectorStore } = require("@langchain/community/vectorstores/pgvector");
 
-const { chatOpenAImodel } = require('../config/gpt')
+const { chatOpenAImodel, embeddingsModel } = require('../config/gpt')
 
 const { pgVectorConfig } = require("../config/pgdb")
+
+
 
 exports.gpt = async (req, res) => {
   let chatMessages = req.body.chatMessages;
@@ -20,30 +22,13 @@ exports.gpt = async (req, res) => {
   const question = lastMessage ? lastMessage.message : null;
   console.log('question', question)
 
-  const similarityThreshold = 100;
   const chatHistory = formatChatHistory(chatMessages)
   console.log('conversation', chatHistory)
-
-  const embeddingsModel = new OpenAIEmbeddings({
-    openAIApiKey: process.env.OPENAI_API_KEY, 
-    batchSize: 512,
-    modelName: "text-embedding-3-large",
-    dimensions: 512
-  });
   
   const pgvectorStore = new PGVectorStore(embeddingsModel, pgVectorConfig);
 
-  const similarityScoreFilter = {
-    type: "similarityScore", // This is hypothetical and needs to be adjusted
-    condition: "<",
-    value: similarityThreshold
-  };
-
   let pgVectorResult = await pgvectorStore.similaritySearch(question, 5)
   console.log('pgVectorResult', pgVectorResult)
-  pgVectorResult.forEach((result, index) => {
-    console.log(`Result ${index + 1} Similarity Score:`, result.similarityScore);
-  });
 
   if(pgVectorResult && pgVectorResult.length > 0) {
     const handleDocumentChainRes = await handleDocumentChain(chatHistory, pgVectorResult)
