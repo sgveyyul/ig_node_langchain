@@ -12,7 +12,7 @@ const { chatOpenAImodel, embeddingsModel } = require('../config/gpt')
 
 const { pgVectorConfig } = require("../config/pgdb")
 
-import { ChatMessageHistory } from "langchain/stores/message/in_memory";
+const { ChatMessageHistory } = require("langchain/stores/message/in_memory");
 
 const type { BaseMessage } = require("@langchain/core/messages");
 const {
