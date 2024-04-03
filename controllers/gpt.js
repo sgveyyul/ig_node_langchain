@@ -18,10 +18,14 @@ const { BaseMessage } = require("@langchain/core/messages");
 const {
   RunnablePassthrough,
   RunnableSequence,
+  RunnableBranch
 } = require("@langchain/core/runnables");
+
+const { StringOutputParser } = require("@langchain/core/output_parsers");
 
 exports.gpt = async (req, res) => {
   let chatMessages = req.body.chatMessages;
+  console.log(chatMessages)
 
   const lastMessageIndex = chatMessages.length - 1;
   const lastMessage = chatMessages[lastMessageIndex];
@@ -88,6 +92,7 @@ const handlePrompTemplatesChain = async(conversation) => {
 }
 
 const handleDocumentChain = async(retriever, conversation, docs) => {
+  let result = None
   const prompt = ChatPromptTemplate.fromMessages([
     [
       "system",
@@ -100,16 +105,48 @@ const handleDocumentChain = async(retriever, conversation, docs) => {
     prompt: prompt,
   });
 
+  await documentChain.invoke({
+    messages: conversation,
+    context: docs,
+  });
+
   const parseRetrieverInput = (params) => {
     return params.messages[params.messages.length - 1].content;
   };
-  
+
   const retrievalChain = RunnablePassthrough.assign({
     context: RunnableSequence.from([parseRetrieverInput, retriever]),
   }).assign({
     answer: documentChain,
   });
 
-  const result = await retrievalChain.invoke({messages: conversation, context: docs})
+  await retrievalChain.invoke({messages: conversation})
+  
+  const queryTransformPrompt = ChatPromptTemplate.fromMessages([
+    new MessagesPlaceholder("messages"),
+    [
+      "user",
+      "Given the above conversation, generate a search query to look up in order to get information relevant to the conversation. Only respond with the query, nothing else.",
+    ],
+  ]);
+
+  const queryTransformingRetrieverChain = RunnableBranch.from([
+    [
+      (params) => params.messages.length > 0,
+      RunnableSequence.from([parseRetrieverInput, retriever]),
+    ],
+    queryTransformPrompt
+      .pipe(chatOpenAImodel)
+      .pipe(new StringOutputParser())
+      .pipe(retriever),
+  ]).withConfig({ runName: "chat_retriever_chain" });
+
+  const conversationalRetrievalChain = RunnablePassthrough.assign({
+    context: queryTransformingRetrieverChain,
+  }).assign({
+    answer: documentChain,
+  });
+
+  result = await conversationalRetrievalChain.invoke({messages: conversation})
   return result
 }
