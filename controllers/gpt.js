@@ -53,7 +53,7 @@ exports.gpt = async (req, res) => {
   let elevenLabs = undefined
   if(file) {
     elevenLabs = new ElevenLabsClient({
-      apiKey: "YOUR_API_KEY" // Defaults to process.env.ELEVENLABS_API_KEY
+      apiKey: process.env.ELEVEN_LABS_API_KEY // Defaults to process.env.ELEVENLABS_API_KEY
     })
     audioFile = await convertAudioToText(file)
     console.log('convertAudioToText', audioFile)
