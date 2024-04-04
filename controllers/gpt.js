@@ -34,6 +34,7 @@ const { fs } = require("fs");
 const { ElevenLabsClient, play } = require("elevenlabs");
 
 const { Readable } = require("stream");
+const { toFile } = require("openai/uploads");
 
 exports.gpt = async (req, res) => {
   let file = req.file
@@ -178,7 +179,7 @@ const handleDocumentChain = async(retriever, conversation, docs, file) => {
 }
 
 const convertAudioToText = async(file) => {
-  const bufferStream = Readable.from(file.buffer);
+  const bufferStream = await toFile(Readable.from(file.buffer), file.originalname);
 
   console.log(bufferStream)
 
