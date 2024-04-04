@@ -21,5 +21,3 @@ exports.chatOpenAImodel = new ChatOpenAI({
   temperature: 0.5,
   verbose: true
 });
-
-exports.langSmithClient = new Client();
