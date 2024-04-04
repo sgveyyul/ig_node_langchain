@@ -75,7 +75,7 @@ exports.gpt = async (req, res) => {
     return res.status(200).json({
       success: true,
       message: {
-        content: file ? await convertTextToAudio(handleDocumentChainRes.answer) : handleDocumentChainRes.answer,
+        content: file ? await convertTextToAudio(elevenLabs, handleDocumentChainRes.answer) : handleDocumentChainRes.answer,
         role: 'assistant'
       },
     });
@@ -192,8 +192,8 @@ const convertAudioToText = async(file) => {
   return transcription.text
 }
 
-const convertTextToAudio = async(text) => {
-  const audio = await elevenlabs.generate({
+const convertTextToAudio = async(elevenLabs, text) => {
+  const audio = await elevenLabs.generate({
     voice: "Rachel",
     text: text,
     model_id: "eleven_multilingual_v2"
