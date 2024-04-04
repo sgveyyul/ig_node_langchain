@@ -55,6 +55,7 @@ exports.gpt = async (req, res) => {
       apiKey: "YOUR_API_KEY" // Defaults to process.env.ELEVENLABS_API_KEY
     })
     audioFile = convertAudioToText(file)
+    console.log('convertAudioToText')
     chatMessages.push({message: audioFile.text, sender: 'user'})
   }
   const chatHistory = formatChatHistory(chatMessages)
