@@ -17,7 +17,6 @@ const upload = multer({
 // initial api
 router.post(
   '/gpt',
-  upload.single("file"),
 //   userAuthController.authenticateJWT, 
 gptController.gpt
 );
