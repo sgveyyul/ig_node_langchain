@@ -180,6 +180,8 @@ const handleDocumentChain = async(retriever, conversation, docs, file) => {
 const convertAudioToText = async(file) => {
   const bufferStream = Readable.from(file.buffer);
 
+  console.log(bufferStream)
+
   const transcription = await intelligo_openai.audio.transcriptions.create({
     file: bufferStream,
     model: "whisper-1",
