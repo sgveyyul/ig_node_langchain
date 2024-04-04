@@ -76,7 +76,8 @@ exports.gpt = async (req, res) => {
       success: true,
       message: {
         content: file ? await convertTextToAudio(elevenLabs, handleDocumentChainRes.answer) : handleDocumentChainRes.answer,
-        role: 'assistant'
+        role: 'assistant',
+        content_type: file ? 'audio' : 'text' 
       },
     });
   }
@@ -88,7 +89,8 @@ exports.gpt = async (req, res) => {
     success: true,
     message: {
       content: file ? await convertTextToAudio(elevenLabs, result.content) : result.content,
-      role: 'assistant'
+      role: 'assistant',
+      content_type: file ? 'audio' : 'text' 
     },
   });
 }
