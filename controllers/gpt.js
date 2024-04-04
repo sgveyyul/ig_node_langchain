@@ -33,10 +33,12 @@ const { fs } = require("fs");
 
 const { ElevenLabsClient, play } = require("elevenlabs");
 
+const { Readable } = require("stream");
+
 exports.gpt = async (req, res) => {
   let file = req.file
-  let chatMessages = req.body.chatMessages;
-  console.log(chatMessages)
+  let chatMessages = req.body.chatMessages || req.body;
+  console.log('chatMessages', chatMessages)
 
   const lastMessageIndex = chatMessages.length - 1;
   const lastMessage = chatMessages[lastMessageIndex];
