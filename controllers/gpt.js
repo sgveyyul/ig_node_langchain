@@ -34,54 +34,55 @@ const { fs } = require("fs");
 const { ElevenLabsClient, play } = require("elevenlabs");
 
 exports.gpt = async (req, res) => {
-  let file = req.file
-  let chatMessages = req.body.chatMessages;
-  console.log(chatMessages)
+  let file = req.body
+  console.log(file)
+  // let chatMessages = req.body.chatMessages;
+  // console.log(chatMessages)
 
-  const lastMessageIndex = chatMessages.length - 1;
-  const lastMessage = chatMessages[lastMessageIndex];
-  const question = lastMessage ? lastMessage.message : null;
-  console.log('question', question)
+  // const lastMessageIndex = chatMessages.length - 1;
+  // const lastMessage = chatMessages[lastMessageIndex];
+  // const question = lastMessage ? lastMessage.message : null;
+  // console.log('question', question)
 
-  let audioFile = undefined
-  let elevenLabs = undefined
-  if(file) {
-    elevenLabs = new ElevenLabsClient({
-      apiKey: "YOUR_API_KEY" // Defaults to process.env.ELEVENLABS_API_KEY
-    })
-    audioFile = convertAudioToText(file)
-    chatMessages.push(audioFile.text)
-  }
-  const chatHistory = formatChatHistory(chatMessages)
-  console.log('conversation', chatHistory)
+  // let audioFile = undefined
+  // let elevenLabs = undefined
+  // if(file) {
+  //   elevenLabs = new ElevenLabsClient({
+  //     apiKey: "YOUR_API_KEY" // Defaults to process.env.ELEVENLABS_API_KEY
+  //   })
+  //   audioFile = convertAudioToText(file)
+  //   chatMessages.push(audioFile.text)
+  // }
+  // const chatHistory = formatChatHistory(chatMessages)
+  // console.log('conversation', chatHistory)
   
-  const pgvectorStore = new PGVectorStore(embeddingsModel, pgVectorConfig);
-  let retriever = pgvectorStore.asRetriever(4)
+  // const pgvectorStore = new PGVectorStore(embeddingsModel, pgVectorConfig);
+  // let retriever = pgvectorStore.asRetriever(4)
 
-  let pgVectorResult = await pgvectorStore.similaritySearch(question, 5)
-  console.log('pgVectorResult', pgVectorResult)
+  // let pgVectorResult = await pgvectorStore.similaritySearch(question, 5)
+  // console.log('pgVectorResult', pgVectorResult)
 
-  if(pgVectorResult && pgVectorResult.length > 0) {
-    const handleDocumentChainRes = await handleDocumentChain(retriever, chatHistory, pgVectorResult)
-    console.log('handleDocumentChainRes', handleDocumentChainRes)
-    return res.status(200).json({
-      success: true,
-      message: {
-        content: file ? await convertTextToAudio(handleDocumentChainRes.answer) : handleDocumentChainRes.answer,
-        role: 'assistant'
-      },
-    });
-  }
+  // if(pgVectorResult && pgVectorResult.length > 0) {
+  //   const handleDocumentChainRes = await handleDocumentChain(retriever, chatHistory, pgVectorResult)
+  //   console.log('handleDocumentChainRes', handleDocumentChainRes)
+  //   return res.status(200).json({
+  //     success: true,
+  //     message: {
+  //       content: file ? await convertTextToAudio(handleDocumentChainRes.answer) : handleDocumentChainRes.answer,
+  //       role: 'assistant'
+  //     },
+  //   });
+  // }
 
-  // If bot cannot retrieve asnwers from vector database
-  const result = await handlePrompTemplatesChain(chatHistory)
+  // // If bot cannot retrieve asnwers from vector database
+  // const result = await handlePrompTemplatesChain(chatHistory)
 
   return res.status(200).json({
     success: true,
-    message: {
-      content: result.content,
-      role: 'assistant'
-    },
+    // message: {
+    //   content: result.content,
+    //   role: 'assistant'
+    // },
   });
 }
 
