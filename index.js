@@ -10,6 +10,10 @@ const gptRoutes = require('./routes/gpt.js')
 const app = express()
 
 process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = process.env.NODE_TLS_REJECT_UNAUTHORIZED;
+process.env['LANGCHAIN_TRACING_V2'] = process.env.LANGCHAIN_TRACING_V2;
+process.env['LANGCHAIN_ENDPOINT'] = process.env.LANGCHAIN_ENDPOINT;
+process.env['LANGCHAIN_API_KEY'] = process.env.LANGCHAIN_API_KEY;
+process.env['LANGCHAIN_PROJECT'] = process.env.LANGCHAIN_PROJECT;
 
 app.use(cors({
     origin: '*'
