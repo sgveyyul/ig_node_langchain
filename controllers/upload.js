@@ -12,7 +12,7 @@ const { pgVectorConfig } = require("../config/pgdb")
 
 // upload file to s3 parallelly in chunks
 exports.fileUpload = async (req, res) => {
-	const file = req.file
+	const file = req.audio
 	console.log(file)
 
 	// params for s3 upload

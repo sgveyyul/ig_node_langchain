@@ -34,7 +34,7 @@ const { fs } = require("fs");
 const { ElevenLabsClient, play } = require("elevenlabs");
 
 exports.gpt = async (req, res) => {
-  let file = req.body
+  let file = req.audio
   console.log(file)
   // let chatMessages = req.body.chatMessages;
   // console.log(chatMessages)
