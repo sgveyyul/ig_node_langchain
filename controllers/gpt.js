@@ -55,7 +55,7 @@ exports.gpt = async (req, res) => {
     elevenLabs = new ElevenLabsClient({
       apiKey: "YOUR_API_KEY" // Defaults to process.env.ELEVENLABS_API_KEY
     })
-    audioFile = convertAudioToText(file)
+    audioFile = await convertAudioToText(file)
     console.log('convertAudioToText', audioFile)
     chatMessages.push({message: audioFile, sender: 'user', direction: 'outgoing'})
   }
