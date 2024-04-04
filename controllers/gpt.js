@@ -41,7 +41,7 @@ exports.gpt = async (req, res) => {
   if(typeof chatMessages === 'string') {
     chatMessages = JSON.parse(chatMessages);
   }
-  console.log('chatMessages', chatMessages)
+  
 
   const lastMessageIndex = chatMessages.length - 1;
   const lastMessage = chatMessages[lastMessageIndex];
@@ -55,9 +55,10 @@ exports.gpt = async (req, res) => {
       apiKey: "YOUR_API_KEY" // Defaults to process.env.ELEVENLABS_API_KEY
     })
     audioFile = convertAudioToText(file)
-    console.log('convertAudioToText')
-    chatMessages.push({message: audioFile.text, sender: 'user'})
+    console.log('convertAudioToText', audioFile.text)
+    chatMessages.push({message: audioFile.text, sender: 'user', direction: 'outgoing'})
   }
+  console.log('chatMessages', chatMessages)
   const chatHistory = formatChatHistory(chatMessages)
   console.log('conversation', chatHistory)
   
