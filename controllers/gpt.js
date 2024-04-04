@@ -86,10 +86,10 @@ exports.gpt = async (req, res) => {
 
   return res.status(200).json({
     success: true,
-    // message: {
-    //   content: result.content,
-    //   role: 'assistant'
-    // },
+    message: {
+      content: file ? await convertTextToAudio(elevenLabs, result.content) : result.content,
+      role: 'assistant'
+    },
   });
 }
 
