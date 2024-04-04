@@ -179,7 +179,7 @@ const handleDocumentChain = async(retriever, conversation, docs, file) => {
 }
 
 const convertAudioToText = async(file) => {
-  const bufferStream = await toFile(Readable.from(file.buffer), file.originalname);
+  const bufferStream = await toFile(Readable.from(file), file.originalname);
 
   console.log(bufferStream)
 
