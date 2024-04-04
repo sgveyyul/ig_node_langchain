@@ -18,7 +18,7 @@ const upload = multer({
 
 // initial api
 router.post(
-  '/langchain/upload',
+  '/upload',
   upload.single("file"),
 //   userAuthController.authenticateJWT, 
   uploadFileController.fileUpload
