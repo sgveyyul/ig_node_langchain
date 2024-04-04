@@ -20,11 +20,13 @@
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
+    "elevenlabs": "^0.2.2",
     "express": "^4.19.2",
     "langchain": "^0.1.30",
     "langsmith": "^0.1.14",
     "multer": "^1.4.5-lts.1",
     "nodemon": "^3.1.0",
+    "openai": "^4.32.1",
     "pg": "^8.11.4",
     "uuid": "^9.0.1"
   }

@@ -4,6 +4,8 @@ const { ChatOpenAI, OpenAIEmbeddings } = require("@langchain/openai");
 
 const { Client } = require("langsmith");
 
+const OpenAI = require("openai");
+
 process.env['LANGCHAIN_TRACING_V2'] = process.env.LANGCHAIN_TRACING_V2;
 process.env['LANGCHAIN_ENDPOINT'] = process.env.LANGCHAIN_ENDPOINT;
 process.env['LANGCHAIN_API_KEY'] = process.env.LANGCHAIN_API_KEY;
@@ -21,3 +23,5 @@ exports.chatOpenAImodel = new ChatOpenAI({
   temperature: 0.5,
   verbose: true
 });
+
+exports.intelligo_openai = new OpenAI()

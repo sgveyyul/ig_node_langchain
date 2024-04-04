@@ -8,7 +8,11 @@ const { createRetrievalChain } = require("langchain/chains/retrieval");
 const { createStuffDocumentsChain } = require("langchain/chains/combine_documents");
 const { PGVectorStore } = require("@langchain/community/vectorstores/pgvector");
 
-const { chatOpenAImodel, embeddingsModel } = require('../config/gpt')
+const { 
+  chatOpenAImodel,
+  embeddingsModel,
+  intelligo_openai 
+} = require('../config/gpt')
 
 const { pgVectorConfig } = require("../config/pgdb")
 
@@ -25,7 +29,12 @@ const { StringOutputParser } = require("@langchain/core/output_parsers");
 
 const { v4: uuidv4 } = require("uuid");
 
+const { fs } = require("fs");
+
+const { ElevenLabsClient, play } = require("elevenlabs");
+
 exports.gpt = async (req, res) => {
+  let file = req.file
   let chatMessages = req.body.chatMessages;
   console.log(chatMessages)
 
@@ -34,6 +43,15 @@ exports.gpt = async (req, res) => {
   const question = lastMessage ? lastMessage.message : null;
   console.log('question', question)
 
+  let audioFile = undefined
+  let elevenLabs = undefined
+  if(file) {
+    elevenLabs = new ElevenLabsClient({
+      apiKey: "YOUR_API_KEY" // Defaults to process.env.ELEVENLABS_API_KEY
+    })
+    audioFile = convertAudioToText(file)
+    chatMessages.push(audioFile.text)
+  }
   const chatHistory = formatChatHistory(chatMessages)
   console.log('conversation', chatHistory)
   
@@ -49,7 +67,7 @@ exports.gpt = async (req, res) => {
     return res.status(200).json({
       success: true,
       message: {
-        content: handleDocumentChainRes.answer,
+        content: file ? await convertTextToAudio(handleDocumentChainRes.answer) : handleDocumentChainRes.answer,
         role: 'assistant'
       },
     });
@@ -93,7 +111,7 @@ const handlePrompTemplatesChain = async(conversation) => {
   return result
 }
 
-const handleDocumentChain = async(retriever, conversation, docs) => {
+const handleDocumentChain = async(retriever, conversation, docs, file) => {
   const prompt = ChatPromptTemplate.fromMessages([
     [
       "system",
@@ -150,4 +168,26 @@ const handleDocumentChain = async(retriever, conversation, docs) => {
 
   const result = await conversationalRetrievalChain.invoke({messages: conversation})
   return result
+}
+
+const convertAudioToText = async(file) => {
+  const bufferStream = Readable.from(file.buffer);
+
+  const transcription = await openai.audio.transcriptions.create({
+    file: bufferStream,
+    model: "whisper-1",
+  });
+
+  console.log('convertAudioToText', transcription.text)
+  return transcription.text
+}
+
+const convertTextToAudio = async(text) => {
+  const audio = await elevenlabs.generate({
+    voice: "Rachel",
+    text: text,
+    model_id: "eleven_multilingual_v2"
+  });
+
+  return audio
 }
