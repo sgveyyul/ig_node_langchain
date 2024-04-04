@@ -184,8 +184,8 @@ const convertAudioToText = async(file) => {
     file: bufferStream,
     model: "whisper-1",
   });
-
-  console.log('convertAudioToText', transcription.text)
+  
+  console.log('convertAudioToText', transcription)
   return transcription.text
 }
 
