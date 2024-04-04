@@ -4,6 +4,11 @@ const { ChatOpenAI, OpenAIEmbeddings } = require("@langchain/openai");
 
 const { Client } = require("langsmith");
 
+process.env['LANGCHAIN_TRACING_V2'] = process.env.LANGCHAIN_TRACING_V2;
+process.env['LANGCHAIN_ENDPOINT'] = process.env.LANGCHAIN_ENDPOINT;
+process.env['LANGCHAIN_API_KEY'] = process.env.LANGCHAIN_API_KEY;
+process.env['LANGCHAIN_PROJECT'] = process.env.LANGCHAIN_PROJECT;
+
 exports.embeddingsModel = new OpenAIEmbeddings({
     openAIApiKey: process.env.OPENAI_API_KEY, 
     batchSize: 512,

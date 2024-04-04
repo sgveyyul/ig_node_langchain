@@ -23,6 +23,8 @@ const {
 
 const { StringOutputParser } = require("@langchain/core/output_parsers");
 
+const { v4: uuidv4 } = require("uuid");
+
 exports.gpt = async (req, res) => {
   let chatMessages = req.body.chatMessages;
   console.log(chatMessages)
