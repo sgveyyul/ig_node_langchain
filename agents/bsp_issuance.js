@@ -114,7 +114,7 @@ exports.bsp_agent = async() => {
           to: z.string().describe("the email we will send to"),
           subject: z.string().describe("the subject of the email"),
           body: z.string().describe("the message of the email"),
-          isThereNewIssue: z.string().describe('returns true if there is an issued date equal to current date, else returns false.')
+          isThereNewIssue: z.string().describe(`value of isThereNewIssue, is either true or false.`)
         }),
         func: async ({ to, subject, body, isThereNewIssue }) =>{
           console.log({ to, subject, body, isThereNewIssue })
@@ -155,20 +155,48 @@ exports.bsp_agent = async() => {
     );
 
     const result2 = await agentExecutor.invoke({
-      input: `Based on the data above send an email to yul.stewart.gurrea@ph.ey.com. The subject is 'Latest BSP Issuances'.
-      For the body of the email, can you create a simple html for it. 
-      Start the email with a polite greeting then after it, the list of latest bps issuances. 
-      Please include the number, date issued and subject. Then end the email with a thank you. 
-      If there is a date equal to ${now}, set isThereNewIssue to true, else set to false and do not send the email.`,
+      input:  `
+        Based on the data above, is there a bsp date issued equal to specifically to ${now} and what bsp issuance is this??
+        If no, do the following:
+        1. set the value of 'isThereNewIssue' to false
+        2. set the email to ''
+        3. set the subject to ''
+        4. set the body to '' 
+        5. do not send the email
+        6. end the conversation.
+        If yes, do the following: 
+        1. set the value of 'isThereNewIssue' to true
+        2. send an email to yul.stewart.gurrea@ph.ey.com
+        3. set the subject is 'Latest BSP Issuances'
+        4. for the body of the email, can you create a simple html for it. 
+        Start the email with a polite greeting then after it, the list of latest bps issuances. 
+        Please include the number, date issued and subject. On the bottom of this, please include where you got the information from. Use this ${url}. 
+        Then end the email with a thank you.
+      `,
       chat_history: await demoEphemeralChatMessageHistory2.getMessages()
     });
 
     await demoEphemeralChatMessageHistory2.addMessage(
-      new HumanMessage(`Based on the data above send an email to yul.stewart.gurrea@ph.ey.com. The subject is 'Latest BSP Issuances'.
-      For the body of the email, can you create a simple html for it. 
-      Start the email with a polite greeting then after it, the list of latest bps issuances. 
-      Please include the number, date issued and subject. Then end the email with a thank you. 
-      If there is a date equal to ${now}, set isThereNewIssue to true, else set to false and do not send the email.`)
+      new HumanMessage(
+        `
+          Based on the data above, is there a bsp date issued equal to specifically to ${now} and what bsp issuance is this??
+          If no, do the following:
+          1. set the value of 'isThereNewIssue' to false
+          2. set the email to ''
+          3. set the subject to ''
+          4. set the body to '' 
+          5. do not send the email
+          6. end the conversation.
+          If yes, do the following: 
+          1. set the value of 'isThereNewIssue' to true
+          2. send an email to yul.stewart.gurrea@ph.ey.com
+          3. set the subject is 'Latest BSP Issuances'
+          4. for the body of the email, can you create a simple html for it. 
+          Start the email with a polite greeting then after it, the list of latest bps issuances. 
+          Please include the number, date issued and subject. On the bottom of this, please include where you got the information from. Use this ${url}. 
+          Then end the email with a thank you.
+        `
+      )
     );
 
     // console.log(response2)
