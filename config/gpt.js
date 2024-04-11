@@ -20,7 +20,7 @@ exports.embeddingsModel = new OpenAIEmbeddings({
 
 exports.chatOpenAImodel = new ChatOpenAI({
   modelName: "gpt-3.5-turbo",
-  temperature: 0.5,
+  temperature: 0.8,
   verbose: true
 });
 
