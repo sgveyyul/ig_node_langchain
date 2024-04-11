@@ -39,11 +39,12 @@ const { toFile } = require("openai/uploads");
 exports.gpt = async (req, res) => {
   let file = req.file
   let chatMessages = req.body.chatMessages;
+
+  // this is used when using voice
+  // I am passing the value from the fe as json string
   if(typeof chatMessages === 'string') {
     chatMessages = JSON.parse(chatMessages);
   }
-  
-
   const lastMessageIndex = chatMessages.length - 1;
   const lastMessage = chatMessages[lastMessageIndex];
   const question = lastMessage ? lastMessage.message : null;
@@ -59,15 +60,12 @@ exports.gpt = async (req, res) => {
     console.log('convertAudioToText', audioFile)
     chatMessages.push({message: audioFile, sender: 'user', direction: 'outgoing'})
   }
-  console.log('chatMessages', chatMessages)
   const chatHistory = formatChatHistory(chatMessages)
-  console.log('conversation', chatHistory)
   
   const pgvectorStore = new PGVectorStore(embeddingsModel, pgVectorConfig);
   let retriever = pgvectorStore.asRetriever(4)
 
   let pgVectorResult = await pgvectorStore.similaritySearch(question, 5)
-  console.log('pgVectorResult', pgVectorResult)
 
   if(pgVectorResult && pgVectorResult.length > 0) {
     const handleDocumentChainRes = await handleDocumentChain(retriever, chatHistory, pgVectorResult)
@@ -125,7 +123,7 @@ const handleDocumentChain = async(retriever, conversation, docs, file) => {
   const prompt = ChatPromptTemplate.fromMessages([
     [
       "system",
-      "Answer the user's questions based on the below context:\n\n{context}",
+      "You are a helpful assistant. Answer all questions to the best of your ability.",
     ],
     new MessagesPlaceholder("messages"),
   ]);

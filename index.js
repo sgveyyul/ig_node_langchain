@@ -3,6 +3,8 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
 var cors = require('cors')
+const { run_cron } = require('./cron')
+
 
 const uploadRoutes = require('./routes/upload.js')
 const gptRoutes = require('./routes/gpt.js')
@@ -26,6 +28,8 @@ const port = process.env.PORT || 8000;
 
 app.use('/api/v1', uploadRoutes);
 app.use('/api/v1', gptRoutes);
+
+run_cron()
 
 // run application
 app.listen(port, () => {
