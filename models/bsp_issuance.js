@@ -42,20 +42,21 @@ const BSPIssuance = sequelize.define(
   { timestamps: false }
 )
 
-create = async (user_id, project_id, folderName, folderCategory) => {
-  console.log(user_id, project_id, folderName, folderCategory)
+create = async (number, category, date_issued, subject, url) => {
+  console.log(number, category, date_issued, subject)
   return await BSPIssuance.create({
-    user_id: user_id,
-    project_id: project_id,
-    name: folderName,
-    category: folderCategory
+    number: number,
+    category: category,
+    date_issued: date_issued,
+    subject: subject,
+    url: url
   })
   .then(async (result) => {
     return {
       code: 0,
       success: true,
       msg: `Success.`,
-      data: await result?.dataValues
+      data: result?.dataValues
     }
   })
   .catch(async (err) => {
