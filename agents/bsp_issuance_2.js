@@ -31,6 +31,13 @@ const { saveBSPIssuance } = require('./tools/save_bsp_issuance')
 
 const now = new Date().toISOString().split('T')[0];
 
+process.env['OPENAI_API_KEY'] = process.env.OPENAI_API_KEY
+
+process.env['LANGCHAIN_TRACING_V2'] = process.env.LANGCHAIN_TRACING_V2
+process.env['LANGCHAIN_ENDPOINT'] = process.env.LANGCHAIN_ENDPOINT
+process.env['LANGCHAIN_API_KEY'] = process.env.LANGCHAIN_API_KEY
+process.env['LANGCHAIN_PROJECT'] = process.env.LANGCHAIN_PROJECT
+
 exports.bsp_agent_2 = async() => {
 	try {
 		url = "https://www.bsp.gov.ph/SitePages/Regulations/RegulationsList.aspx?TabId=1"
