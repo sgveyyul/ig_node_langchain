@@ -92,6 +92,5 @@ listAll = async () => {
 module.exports = {
 	BSPIssuance,
   create,
-  get,
-  list
+  listAll
 }
