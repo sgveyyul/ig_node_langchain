@@ -78,7 +78,7 @@ listAll = async () => {
         code: 0,
         success: true,
         msg: `Success.`,
-        data: await result?.dataValues
+        data: result.map(item => item.get({ plain: true }))
       }
     })
     .catch(async (err) => {
