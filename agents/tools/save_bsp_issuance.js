@@ -21,6 +21,7 @@ exports.saveBSPIssuance = async () => {
       bsp_arr: z.array(bspSchema).describe(`object list of all bsp issuances. composed of number, date issued, subject and url.`),
     }),
     func: async ({ bsp_arr }) => {
+        console.log('bsp_arr', bsp_arr)
         const existing_bsp = await BSPIssuance.listAll()
         for(var ebsp in existing_bsp) {
             for(var bsp in bsp_arr) {

@@ -20,11 +20,13 @@ exports.sendEmailTool = async () => {
     }),
     func: async ({ to, subject, body, date, number, bsp_subject }) => {
       const bsp_issuances = await BSPIssuance.listAll()
+      console.log('bsp_issuances', bsp_issuances)
       const latestBSPIssuance = {
         date: date,
         number: number,
         bsp_subject: bsp_subject
       };
+      console.log('latestBSPIssuance', latestBSPIssuance)
       const exists = bsp_issuances.some(item => item.number === latestBSPIssuance.number && item.date_issued === latestBSPIssuance.date);
       if(!exists) {
         await send_email(to, subject, body)
