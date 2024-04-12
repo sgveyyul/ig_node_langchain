@@ -131,7 +131,7 @@ exports.bsp_agent_2 = async() => {
 const load_webpage = async(url) => {
 	try{
 		const browser = await puppeteer.launch({
-			headless: false,
+			headless: true,
 			args: ["--disable-setuid-sandbox"],
 			'ignoreHTTPSErrors': false
 		});
