@@ -27,6 +27,7 @@ const { formatToOpenAIFunctionMessages } = require("langchain/agents/format_scra
 const { OpenAIFunctionsAgentOutputParser } = require("langchain/agents/openai/output_parser");
 
 const { sendEmailTool } = require('./tools/send_email')
+const { saveBSPIssuance } = require('./tools/save_bsp_issuance')
 
 const now = new Date().toISOString().split('T')[0];
 
@@ -57,6 +58,7 @@ exports.bsp_agent_2 = async() => {
 		const tools = [
 			bspIssuanceRetrieverTool,
 			await sendEmailTool(),
+			await saveBSPIssuance()
 		];
 
 		const modelWithFunctions = chatOpenAImodel.bind({
@@ -106,12 +108,21 @@ exports.bsp_agent_2 = async() => {
 			input: input2,
 			chat_history: chatHistory
 		});
-
 		chatHistory.push(new HumanMessage(input2));
 		chatHistory.push(new AIMessage(result2.output));
 
-		// // console.log(response2)
-		console.log('result2', result2)
+		input3 = `
+			Can you convert the bsp issuances in to a list and save it on the database. The keys of the object are
+			number, date_issued, subject and url.
+		`
+		const result3 = await executorWithMemory.invoke({
+			input: input3,
+			chat_history: chatHistory
+		});
+		chatHistory.push(new HumanMessage(input3));
+		chatHistory.push(new AIMessage(result3.output));
+
+		console.log('chatHistory', chatHistory)
 	} catch(e) {
 		console.log(e)
 	}
