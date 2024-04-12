@@ -34,6 +34,8 @@ const {
   intelligo_openai 
 } = require('../config/gpt')
 
+const { sendEmailTool } = require('./tools/send_email')
+
 const now = new Date().toISOString().split('T')[0];
 // const now = '2024-03-26'
 
@@ -64,23 +66,7 @@ exports.bsp_agent = async() => {
 
     const tools = [
       bspIssuanceRetrieverTool,
-      new DynamicStructuredTool({
-        name: "send-email",
-        description: "if you want to send an email to a user, user this tool.",
-        schema: z.object({
-          to: z.string().describe("the email we will send to"),
-          subject: z.string().describe("the subject of the email"),
-          body: z.string().describe("the message of the email"),
-          date: z.string().describe(`the latest issued date on the bsp list`)
-        }),
-        func: async ({ to, subject, body, date }) =>{
-          console.log({ to, subject, body, date })
-          if(date === now) {
-            await bsp_issuance_email_tool(to, subject, body)
-          }
-        }
-           // Outputs still must be strings
-      }),
+      sendEmailTool,
     ];
 
     const prompt = ChatPromptTemplate.fromMessages([
@@ -178,30 +164,3 @@ const split_docs = async(docs) => {
   return docOutput
 }
 
-const bsp_issuance_email_tool = async(to, subject, body) => {
-  console.log('bsp_issuance_email_tool', to, subject, body, 'bsp_issuance_email_tool')
-  try {
-    let transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST,
-      port: process.env.SMTP_PORT,
-      auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASSWORD,
-      },
-    });
-    
-    let info = await transporter.sendMail({
-      from: '"IntelliGo-noreply" <anderson.bondoc@ph.ey.com>',
-      to: to,
-      subject: subject,
-      html: body,
-    });
-
-    console.log('sendMail details: ', subject, info);
-    
-    return info;
-  } catch (error) {
-    console.error('Error sending email:', error);
-    throw error; // You can rethrow the error to handle it in the calling code.
-  }
-}

@@ -1,11 +1,12 @@
 const cron = require("node-cron");
 
-const { bsp_agent } = require('./agents/bsp_issuance')
+const { bsp_agent_2 } = require('./agents/bsp_issuance_2')
 
 
 exports.run_cron = async() => {
 	cron.schedule("*/60 * * * * *", function () {
-		bsp_agent()
+		console.log('bsp_issuance_2()')
+		bsp_agent_2()
 	});
 	
 }
