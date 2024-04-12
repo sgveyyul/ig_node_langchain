@@ -6,6 +6,8 @@ const { Client } = require("langsmith");
 
 const OpenAI = require("openai");
 
+process.env['OPENAI_API_KEY'] = process.env.OPENAI_API_KEY
+
 process.env['LANGCHAIN_TRACING_V2'] = process.env.LANGCHAIN_TRACING_V2;
 process.env['LANGCHAIN_ENDPOINT'] = process.env.LANGCHAIN_ENDPOINT;
 process.env['LANGCHAIN_API_KEY'] = process.env.LANGCHAIN_API_KEY;
