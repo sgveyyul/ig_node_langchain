@@ -77,7 +77,7 @@ listAll = async () => {
         code: 0,
         success: true,
         msg: `Success.`,
-        data: await result
+        data: await result?.dataValues
       }
     })
     .catch(async (err) => {
