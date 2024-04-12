@@ -4,7 +4,7 @@ const nodemailer = require('nodemailer');
 const { z } = require("zod");
 const { DynamicStructuredTool } = require("@langchain/core/tools");
 
-const { BSPIssuance } = require('../../models/bsp_issuance');
+const BSPIssuance = require('../../models/bsp_issuance');
 
 exports.sendEmailTool = async () => {
   return new DynamicStructuredTool({
