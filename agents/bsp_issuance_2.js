@@ -131,9 +131,9 @@ exports.bsp_agent_2 = async() => {
 const load_webpage = async(url) => {
 	try{
 		const browser = await puppeteer.launch({
-			headless: true,
-			args: ["--disable-setuid-sandbox"],
-			'ignoreHTTPSErrors': false
+			headless: "new",
+			args: ["--no-sandbox", "--disable-setuid-sandbox"],
+			'ignoreHTTPSErrors': true
 		});
 		const page = await browser.newPage();
 		await page.goto(url, { waitUntil: 'networkidle2', timeout: 60000 })
