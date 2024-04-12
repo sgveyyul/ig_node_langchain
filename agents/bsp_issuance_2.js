@@ -28,94 +28,90 @@ const { OpenAIFunctionsAgentOutputParser } = require("langchain/agents/openai/ou
 
 const { sendEmailTool } = require('./tools/send_email')
 
-const BSPIssuance= require('../models/bsp_issuance');
-
 const now = new Date().toISOString().split('T')[0];
 
 exports.bsp_agent_2 = async() => {
 	try {
 		url = "https://www.bsp.gov.ph/SitePages/Regulations/RegulationsList.aspx?TabId=1"
-    const bsp_issuances = await BSPIssuance.listAll()
-    console.log('bsp_issuances', bsp_issuances)
 		// await startBrowser()
-		// const rawDocs = await load_webpage(url)
+		const rawDocs = await load_webpage(url)
 
-		// const splitted_docs = await split_docs(rawDocs)
+		const splitted_docs = await split_docs(rawDocs)
 
-		// const vectorstore = await MemoryVectorStore.fromDocuments(
-		// 	splitted_docs,
-		// 	embeddingsModel
-		// );
+		const vectorstore = await MemoryVectorStore.fromDocuments(
+			splitted_docs,
+			embeddingsModel
+		);
 
-		// const retriever = vectorstore.asRetriever(30);
+		const retriever = vectorstore.asRetriever(30);
 
-		// const MEMORY_KEY = "chat_history";
-		// const chatHistory = [];
+		const MEMORY_KEY = "chat_history";
+		const chatHistory = [];
 				
-		// const bspIssuanceRetrieverTool = createRetrieverTool(retriever, {
-		// 	name: "bsp_issuance_search",
-		// 	description:
-		// 		"If you have questions regarding bsp issuances, use this tool",
-		// });
+		const bspIssuanceRetrieverTool = createRetrieverTool(retriever, {
+			name: "bsp_issuance_search",
+			description:
+				"If you have questions regarding bsp issuances, use this tool",
+		});
 
-		// const tools = [
-		// 	bspIssuanceRetrieverTool,
-		// 	await sendEmailTool(),
-		// ];
+		const tools = [
+			bspIssuanceRetrieverTool,
+			await sendEmailTool(),
+		];
 
-		// const modelWithFunctions = chatOpenAImodel.bind({
-		// 	functions: tools.map((tool) => convertToOpenAIFunction(tool)),
-		// });
+		const modelWithFunctions = chatOpenAImodel.bind({
+			functions: tools.map((tool) => convertToOpenAIFunction(tool)),
+		});
 
-		// const prompt = ChatPromptTemplate.fromMessages([
-		// 	['system', 'You are a helpful assistant.'],
-		// 	new MessagesPlaceholder(MEMORY_KEY),
-		// 	['human', "{input}"],
-		// 	new MessagesPlaceholder('agent_scratchpad')
-		// ])
+		const prompt = ChatPromptTemplate.fromMessages([
+			['system', 'You are a helpful assistant.'],
+			new MessagesPlaceholder(MEMORY_KEY),
+			['human', "{input}"],
+			new MessagesPlaceholder('agent_scratchpad')
+		])
 
-		// const agentWithMemory = RunnableSequence.from([
-		// 	{
-		// 			input: (i) => i.input,
-		// 			agent_scratchpad: (i) => formatToOpenAIFunctionMessages(i.steps),
-		// 			chat_history: (i) => i.chat_history,
-		// 	},
-		// 	prompt,
-		// 	modelWithFunctions,
-		// 	new OpenAIFunctionsAgentOutputParser(),
-		// ]);
+		const agentWithMemory = RunnableSequence.from([
+			{
+					input: (i) => i.input,
+					agent_scratchpad: (i) => formatToOpenAIFunctionMessages(i.steps),
+					chat_history: (i) => i.chat_history,
+			},
+			prompt,
+			modelWithFunctions,
+			new OpenAIFunctionsAgentOutputParser(),
+		]);
 
-		// const executorWithMemory = AgentExecutor.fromAgentAndTools({
-		// 	agent: agentWithMemory,
-		// 	tools,
-		// });
+		const executorWithMemory = AgentExecutor.fromAgentAndTools({
+			agent: agentWithMemory,
+			tools,
+		});
 
-		// input1 = "Can you list down all bsp issuances? I want the number, date issued and subject and their urls."
-		// const result1 = await executorWithMemory.invoke({
-		// 	input: input1,
-		// 	chat_history: chatHistory
-		// });
-		// chatHistory.push(new HumanMessage(input1));
-		// chatHistory.push(new AIMessage(result1.output));
+		input1 = "Can you list down all bsp issuances? I want the number, date issued and subject and their urls."
+		const result1 = await executorWithMemory.invoke({
+			input: input1,
+			chat_history: chatHistory
+		});
+		chatHistory.push(new HumanMessage(input1));
+		chatHistory.push(new AIMessage(result1.output));
 		
-		// input2 = `
-		// 	Can you do the following:
-		// 	1. Can you send it on an email to yul.stewart.gurrea@ph.ey.com.
-		// 	2. The subject would be Latest BSP Issuance.
-		// 	3. For the body of the email, can you create a simple html for it, strictly in tabular form. 
-		// 	On the bottom of this, please include where you got the information from. Use this ${url}. 
-		// 	Then end the email with a thank you. Only send the email if the latest issued date on the bsp list is equal to today.
-		// `
-		// const result2 = await executorWithMemory.invoke({
-		// 	input: input2,
-		// 	chat_history: chatHistory
-		// });
+		input2 = `
+			Can you do the following:
+			1. Can you send it on an email to yul.stewart.gurrea@ph.ey.com.
+			2. The subject would be Latest BSP Issuance.
+			3. For the body of the email, can you create a simple html for it, strictly in tabular form. 
+			On the bottom of this, please include where you got the information from. Use this ${url}. 
+			Then end the email with a thank you. Only send the email if the latest issued date on the bsp list is equal to today.
+		`
+		const result2 = await executorWithMemory.invoke({
+			input: input2,
+			chat_history: chatHistory
+		});
 
-		// chatHistory.push(new HumanMessage(input2));
-		// chatHistory.push(new AIMessage(result2.output));
+		chatHistory.push(new HumanMessage(input2));
+		chatHistory.push(new AIMessage(result2.output));
 
-		// // // console.log(response2)
-		// console.log('result2', result2)
+		// // console.log(response2)
+		console.log('result2', result2)
 	} catch(e) {
 		console.log(e)
 	}

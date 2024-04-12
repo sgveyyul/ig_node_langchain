@@ -4,6 +4,8 @@ const nodemailer = require('nodemailer');
 const { z } = require("zod");
 const { DynamicStructuredTool } = require("@langchain/core/tools");
 
+const BSPIssuance= require('../models/bsp_issuance');
+
 exports.sendEmailTool = async () => {
   return new DynamicStructuredTool({
     name: "send-email",
@@ -12,11 +14,22 @@ exports.sendEmailTool = async () => {
       to: z.string().describe("the email we will send to"),
       subject: z.string().describe("the subject of the email"),
       body: z.string().describe("the message of the email"),
-      date: z.string().describe(`the latest issued date on the bsp list`)
+      date: z.string().describe(`the latest issued date on the bsp list`),
+      number: z.string().describe(`the latest issued number on the bsp list`),
+      bsp_subject: z.string().describe(`the latest issued subject on the bsp list`)
     }),
-    func: async ({ to, subject, body, date }) =>{
-      console.log({ to, subject, body, date })
-      await send_email(to, subject, body)
+    func: async ({ to, subject, body, date, number, bsp_subject }) => {
+      const bsp_issuances = await BSPIssuance.listAll()
+      const latestBSPIssuance = {
+        date: date,
+        number: number,
+        bsp_subject: bsp_subject
+      };
+      const exists = bsp_issuances.some(item => item.number === latestBSPIssuance.number && item.date_issued === latestBSPIssuance.date);
+      if(exists) {
+        await send_email(to, subject, body)
+      }
+      
     }
        // Outputs still must be strings
   })
