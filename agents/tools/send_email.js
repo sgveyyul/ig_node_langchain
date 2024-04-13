@@ -62,6 +62,7 @@ const send_email = async(to, subject, body) => {
     return info;
   } catch (error) {
     console.error('Error sending email:', error);
+    console.error('Error sending email:', error.stack);
     throw error; // You can rethrow the error to handle it in the calling code.
   }
 }
