@@ -48,8 +48,7 @@ const send_email = async(to, subject, body) => {
       auth: {
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASSWORD,
-      },
-      secure: process.env.SMTP_SECURE
+      }
     });
     
     let info = await transporter.sendMail({
