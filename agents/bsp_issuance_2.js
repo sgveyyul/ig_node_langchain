@@ -118,16 +118,16 @@ exports.bsp_agent_2 = async() => {
 		chatHistory.push(new HumanMessage(input2));
 		chatHistory.push(new AIMessage(result2.output));
 
-		// input3 = `
-		// 	Can you convert the bsp issuances in to a list and save it on the database. The keys of the object are
-		// 	number, date_issued, subject and url.
-		// `
-		// const result3 = await executorWithMemory.invoke({
-		// 	input: input3,
-		// 	chat_history: chatHistory
-		// });
-		// chatHistory.push(new HumanMessage(input3));
-		// chatHistory.push(new AIMessage(result3.output));
+		input3 = `
+			Can you convert the bsp issuances in to a list and save it on the database. The keys of the object are
+			number, date_issued, subject and url.
+		`
+		const result3 = await executorWithMemory.invoke({
+			input: input3,
+			chat_history: chatHistory
+		});
+		chatHistory.push(new HumanMessage(input3));
+		chatHistory.push(new AIMessage(result3.output));
 
 		console.log('chatHistory', chatHistory)
 	} catch(e) {

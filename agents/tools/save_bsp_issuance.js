@@ -27,7 +27,7 @@ exports.saveBSPIssuance = async () => {
             for(var bsp in bsp_arr) {
                 if(bsp.number !== ebsp.number && bsp.date !== ebsp.date) {
                     console.log(`saving ${number}, ${date_issued}, ${subject}, ${url}`)
-                    // await BSPIssuance.create(number, date_issued, subject, url)
+                    await BSPIssuance.create(number, date_issued, subject, url)
                 }
             }
         }
