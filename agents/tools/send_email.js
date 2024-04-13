@@ -31,6 +31,7 @@ exports.sendEmailTool = async () => {
         for(var bsp in bsp_issuances.data) {
           if(latestBSPIssuance.number !== bsp.number && latestBSPIssuance.date !== bsp.date_issued) {
             await send_email(to, subject, body)
+            break
           }
         }
       }
@@ -48,6 +49,7 @@ const send_email = async(to, subject, body) => {
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASSWORD,
       },
+      secure: process.env.SMTP_SECURE
     });
     
     let info = await transporter.sendMail({
