@@ -23,7 +23,7 @@ exports.saveBSPIssuance = async () => {
     func: async ({ bsp_arr }) => {
         console.log('bsp_arr', bsp_arr)
         const existing_bsp = await BSPIssuance.listAll()
-        for(var ebsp in existing_bsp) {
+        for(var ebsp in existing_bsp.data) {
             for(var bsp in bsp_arr) {
                 if(bsp.number !== ebsp.number && bsp.date !== ebsp.date) {
                     console.log(`saving ${number}, ${date_issued}, ${subject}, ${url}`)
