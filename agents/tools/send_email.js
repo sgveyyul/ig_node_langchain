@@ -6,6 +6,8 @@ const { DynamicStructuredTool } = require("@langchain/core/tools");
 
 const BSPIssuance = require('../../models/bsp_issuance');
 
+const _ = require('lodash');
+
 exports.sendEmailTool = async () => {
   return new DynamicStructuredTool({
     name: "send-email",
@@ -28,12 +30,15 @@ exports.sendEmailTool = async () => {
       };
       console.log('latestBSPIssuance', latestBSPIssuance)
       if(bsp_issuances && bsp_issuances.data && bsp_issuances.data.length > 0) {
-        for(var i in bsp_issuances.data) {
-          if(latestBSPIssuance.number !== bsp_issuances.data[i].number && latestBSPIssuance.date !== bsp_issuances.data[i].date_issued) {
-            await send_email(to, subject, body)
-            break
-          }
+        const containsObject = bsp_issuances.data.some(element => _.isEqual(element, latestBSPIssuance));
+        if(containsObject) {
+          await send_email(to, subject, body)
+          return 'Email sent.'
+        } else {
+          return 'BSP Issuance already exists.'
         }
+      } else {
+        return 'Table bsp_issuance is empty.'
       }
       
     }
