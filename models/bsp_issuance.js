@@ -47,7 +47,6 @@ const BSPIssuance = sequelize.define(
 )
 
 create = async (number, category, date_issued, subject, url) => {
-  console.log(number, category, date_issued, subject)
   return await BSPIssuance.create({
     number: number,
     category: category,
