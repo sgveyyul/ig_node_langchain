@@ -28,8 +28,8 @@ exports.sendEmailTool = async () => {
       };
       console.log('latestBSPIssuance', latestBSPIssuance)
       if(bsp_issuances && bsp_issuances.data && bsp_issuances.data.length > 0) {
-        for(var bsp in bsp_issuances.data) {
-          if(latestBSPIssuance.number !== bsp.number && latestBSPIssuance.date !== bsp.date_issued) {
+        for(var i in bsp_issuances.data) {
+          if(latestBSPIssuance.number !== bsp_issuances.data[i].number && latestBSPIssuance.date !== bsp_issuances.data[i].date_issued) {
             await send_email(to, subject, body)
             break
           }
