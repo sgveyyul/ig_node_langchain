@@ -21,11 +21,10 @@ exports.saveBSPIssuance = async () => {
       bsp_arr: z.array(bspSchema).describe(`object list of all bsp issuances. composed of number, date issued, subject and url.`),
     }),
     func: async ({ bsp_arr }) => {
-        console.log('bsp_arr', bsp_arr)
         const existing_bsp = await BSPIssuance.listAll()
-        for(var ebsp in existing_bsp.data) {
-            for(var bsp in bsp_arr) {
-                if(bsp.number !== ebsp.number && bsp.date !== ebsp.date) {
+        for(var i in existing_bsp.data) {
+            for(var j in bsp_arr) {
+                if(bsp_arr[j].number !== existing_bsp.data[i].number && bsp_arr[j].date_issued !== existing_bsp.data[i].date_issued) {
                     console.log(`saving ${number}, ${date_issued}, ${subject}, ${url}`)
                     await BSPIssuance.create(number, date_issued, subject, url)
                 }
