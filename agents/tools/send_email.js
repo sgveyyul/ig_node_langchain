@@ -35,7 +35,8 @@ exports.sendEmailTool = async () => {
           issuance.date_issued === latestBSPIssuance.date &&
           issuance.subject === latestBSPIssuance.bsp_subject
         );
-        if(exists) {
+        if(!exists) {
+          console.log('not exists')
           await send_email(to, subject, body)
           return 'Email sent.'
         } else {
