@@ -16,6 +16,10 @@ const BSPIssuance = sequelize.define(
       allowNull: false,
       unique: true
     },
+		category: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
     date_issued: {
       type: DataTypes.STRING,
       allowNull: false,
