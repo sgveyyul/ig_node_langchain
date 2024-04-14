@@ -30,8 +30,12 @@ exports.sendEmailTool = async () => {
       };
       console.log('latestBSPIssuance', latestBSPIssuance)
       if(bsp_issuances && bsp_issuances.data && bsp_issuances.data.length > 0) {
-        const containsObject = bsp_issuances.data.some(element => _.isEqual(element, latestBSPIssuance));
-        if(containsObject) {
+        const exists = bsp_issuances.data.some(issuance =>
+          issuance.number === latestBSPIssuance.number &&
+          issuance.date_issued === latestBSPIssuance.date &&
+          issuance.subject === latestBSPIssuance.bsp_subject
+        );
+        if(exists) {
           await send_email(to, subject, body)
           return 'Email sent.'
         } else {
