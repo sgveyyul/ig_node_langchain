@@ -26,7 +26,7 @@ exports.sendEmailTool = async () => {
       date: z.string().describe(`the latest issued date on the bsp list`),
       number: z.string().describe(`the latest issued number on the bsp list`),
       bsp_subject: z.string().describe(`the latest issued subject on the bsp list`),
-      bsp_arr: z.array(bspSchema).describe(`object list of bsp issuances that are that are in List A but not in List B.`)
+      bsp_arr: z.array(bspSchema).describe(`object list C.`)
     }),
     func: async ({ to, subject, body, date, number, bsp_subject, bsp_arr }) => {
       console.log('emails', to, bsp_arr)
