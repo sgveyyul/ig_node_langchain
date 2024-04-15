@@ -120,7 +120,7 @@ exports.bsp_agent_2 = async() => {
 			Can you do the following:
 			1. Can you send it on an email to yul.stewart.gurrea@ph.ey.com.
 			2. The subject would be Latest BSP Issuance.
-			3. For the body of the email, can you create a simple html for List C, strictly in table form with borders.
+			3. For the body of the email, can you create a simple html for List C, strictly in table form with borders inside and out.
 			Alignment should be left. 
 			On the bottom of this, please include where you got the information from. Use this ${url}. 
 			Then end the email with a thank you. Only send the email if the latest issued date on the bsp list is equal to today.
