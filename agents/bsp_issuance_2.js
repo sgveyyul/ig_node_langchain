@@ -98,15 +98,12 @@ exports.bsp_agent_2 = async() => {
 		});
 
 		const input1 = `Can you list down all bsp issuances? I want the number, date issued and subject and their urls. Please format the output with labels for each field.
-      For example:
-      1. Number: CL-2024-018
-      Date Issued: 2024-04-12
-      Subject: Publication/Posting of Balance Sheet (BS)
-      url: Link to Details
-      2. Number: CL-2024-019
-      Date Issued: 2024-04-12
-      Subject: Publication/Posting of Statement of Condition and/or Consolidated Statement of Condition
-      url: Link to Details`
+      This is the sample format.
+      1. Number: number
+      Date Issued: date issued
+      Subject: subject
+      url: url
+    `
 		const result1 = await executorWithMemory.invoke({
 			input: input1,
 			chat_history: chatHistory
