@@ -105,7 +105,7 @@ exports.bsp_agent_2 = async() => {
 		chatHistory.push(new HumanMessage(input1));
 		chatHistory.push(new AIMessage(result1.output));
 
-    const input2 = `Lets name the list above list A and this list of objects as list B ${existing_bsp.data}. 
+    const input2 = `Lets name the list above list A and this list of objects as list B ${JSON.stringify(existing_bsp.data, null, 2)}. 
     Can you compare list A and B, and get the bsp issuances that are in list A but not in list B.
     Create a list of objects for it. The keys of the object are number, date_issued, subject and url.
     .`
