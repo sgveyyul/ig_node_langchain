@@ -45,9 +45,9 @@ exports.sendEmailTool = async () => {
           for(var i in to) {
             await send_email(to[i], subject, body)
           }
-          return 'Email sent.'
+          return `The email was sent to the followning emails ${to.map(v => `"${v}"`).join(', ')}. the subject of the email was ${subject}. The body of the email is ${body}.`
         } else {
-          return 'BSP Issuance already exists.'
+          return 'There are no new bsop issuances'
         }
       } else {
         return 'Table bsp_issuance is empty.'
