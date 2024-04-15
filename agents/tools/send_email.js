@@ -38,20 +38,20 @@ exports.sendEmailTool = async () => {
         bsp_subject: bsp_subject
       };
       if(!new_values) {
-        return 'There are no new bsp issuances'
+        return 'There are no new bsp issuances. No email have been sent.'
       }
       console.log('latestBSPIssuance', latestBSPIssuance)
       if(bsp_issuances && bsp_issuances.data && bsp_issuances.data.length > 0) {
         // validate data
         if(latestBSPIssuance.number.length < 4) {
-          return 'Invalid format of bsp issuance number.'
+          return 'Invalid format of bsp issuance number. No email have been sent.'
         }
         for(var i in to) {
           await send_email(to[i], subject, body)
         }
         return `The email was sent to the followning emails ${to.map(v => `"${v}"`).join(', ')}. the subject of the email was ${subject}. The body of the email is ${body}.`
       } else {
-        return 'Table bsp_issuance is empty.'
+        return 'Table bsp_issuance is empty. No email have been sent.'
       }
     }
   })
