@@ -105,8 +105,8 @@ exports.bsp_agent_2 = async() => {
 		chatHistory.push(new HumanMessage(input1));
 		chatHistory.push(new AIMessage(result1.output));
 
-    const input2 = `Based on the list you have scraped above and list of existing bsp issuances in the database which are 
-    ${existing_bsp.data}. Can you compare the scraped list and the bsp issuances in the database, and get the bsp issuances that are not in the database.
+    const input2 = `Lets name the list above list A and this list of objects as list B ${existing_bsp.data}. 
+    Can you compare list A and B, and get the bsp issuances that are in list A but not in list B.
     Create a list of objects for it. The keys of the object are number, date_issued, subject and url.
     .`
 		const result2 = await executorWithMemory.invoke({
