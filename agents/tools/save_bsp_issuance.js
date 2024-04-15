@@ -21,7 +21,8 @@ exports.saveBSPIssuance = async () => {
       bsp_arr: z.array(bspSchema).describe(`object list of all bsp issuances. composed of number, date issued, subject and url.`),
       new_values: z.boolean().describe('boolean if there are new bsp issuance in list C')
     }),
-    func: async ({ bsp_arr }) => {
+    func: async ({ bsp_arr, new_values }) => {
+        console.log('new_values', new_values)
         const existing_bsp = await BSPRegulations.listAll()
         for(var i in existing_bsp.data) {
           if(bsp_arr.length === 0) {
