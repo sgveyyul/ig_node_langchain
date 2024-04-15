@@ -46,24 +46,13 @@ exports.sendEmailTool = async () => {
         if(latestBSPIssuance.number.length < 4) {
           return 'Invalid format of bsp issuance number.'
         }
-        const exists = bsp_issuances.data.some(issuance =>
-          issuance.number === latestBSPIssuance.number &&
-          issuance.date_issued === latestBSPIssuance.date &&
-          issuance.subject === latestBSPIssuance.bsp_subject
-        );
-        if(!exists) {
-          console.log('not exists')
-          for(var i in to) {
-            await send_email(to[i], subject, body)
-          }
-          return `The email was sent to the followning emails ${to.map(v => `"${v}"`).join(', ')}. the subject of the email was ${subject}. The body of the email is ${body}.`
-        } else {
-          return 'There are no new bsp issuances'
+        for(var i in to) {
+          await send_email(to[i], subject, body)
         }
+        return `The email was sent to the followning emails ${to.map(v => `"${v}"`).join(', ')}. the subject of the email was ${subject}. The body of the email is ${body}.`
       } else {
         return 'Table bsp_issuance is empty.'
       }
-      
     }
   })
 }
