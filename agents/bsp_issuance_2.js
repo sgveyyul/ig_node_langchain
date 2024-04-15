@@ -107,7 +107,7 @@ exports.bsp_agent_2 = async() => {
 
     const input2 = `Lets name the list above list A and this list of objects as list B ${JSON.stringify(existing_bsp.data, null, 2)}. 
     Can you compare list A and B, and get the bsp issuances that are in list A but not in list B.
-    Create a list of objects for it. The keys of the object are number, date_issued, subject and url.
+    Create a list of objects for it and lets call it List C. The keys of the object are number, date_issued, subject and url.
     .`
 		const result2 = await executorWithMemory.invoke({
 			input: input2,
@@ -116,21 +116,21 @@ exports.bsp_agent_2 = async() => {
 		chatHistory.push(new HumanMessage(input2));
 		chatHistory.push(new AIMessage(result2.output));
 		
-		// const input2 = `
-		// 	Can you do the following:
-		// 	1. Can you send it on an email to yul.stewart.gurrea@ph.ey.com, anderson.bondoc@ph.ey.com, maria.luisa.c.echavez@ph.ey.com and christian.g.lauron@ph.ey.com.
-		// 	2. The subject would be Latest BSP Issuance.
-		// 	3. For the body of the email, can you create a simple html for it, strictly in table form with borders.
-		// 	Alignment should be left. 
-		// 	On the bottom of this, please include where you got the information from. Use this ${url}. 
-		// 	Then end the email with a thank you. Only send the email if the latest issued date on the bsp list is equal to today.
-		// `
-		// const result2 = await executorWithMemory.invoke({
-		// 	input: input2,
-		// 	chat_history: chatHistory
-		// });
-		// chatHistory.push(new HumanMessage(input2));
-		// chatHistory.push(new AIMessage(result2.output));
+		const input3 = `
+			Can you do the following:
+			1. Can you send it on an email to yul.stewart.gurrea@ph.ey.com.
+			2. The subject would be Latest BSP Issuance.
+			3. For the body of the email, can you create a simple html for List C, strictly in table form with borders.
+			Alignment should be left. 
+			On the bottom of this, please include where you got the information from. Use this ${url}. 
+			Then end the email with a thank you. Only send the email if the latest issued date on the bsp list is equal to today.
+		`
+		const result3 = await executorWithMemory.invoke({
+			input: input3,
+			chat_history: chatHistory
+		});
+		chatHistory.push(new HumanMessage(input3));
+		chatHistory.push(new AIMessage(result3.output));
 
 		// const input3 = `
 		// 	Can you convert the bsp issuances in to a list and save it on the database. The keys of the object are
