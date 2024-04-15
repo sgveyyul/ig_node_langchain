@@ -51,7 +51,7 @@ exports.bsp_agent_2 = async() => {
 			embeddingsModel
 		);
 
-		const retriever = vectorstore.asRetriever(30);
+		const retriever = vectorstore.asRetriever(20);
 
 		const MEMORY_KEY = "chat_history";
 		const chatHistory = [];
