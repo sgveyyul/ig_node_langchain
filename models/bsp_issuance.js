@@ -4,7 +4,7 @@ const { sequelize } = require('../config/db.config.js')
 const moment = require('moment')
 
 const BSPRegulations = sequelize.define(
-  'BSP_Regulations', 
+  'bsp_issuance', 
   {
     id: {
       type: DataTypes.INTEGER,
