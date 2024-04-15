@@ -37,6 +37,9 @@ exports.sendEmailTool = async () => {
         number: number,
         bsp_subject: bsp_subject
       };
+      if(!new_values) {
+        return 'There are no new bsp issuances'
+      }
       console.log('latestBSPIssuance', latestBSPIssuance)
       if(bsp_issuances && bsp_issuances.data && bsp_issuances.data.length > 0) {
         // validate data
@@ -55,7 +58,7 @@ exports.sendEmailTool = async () => {
           }
           return `The email was sent to the followning emails ${to.map(v => `"${v}"`).join(', ')}. the subject of the email was ${subject}. The body of the email is ${body}.`
         } else {
-          return 'There are no new bsop issuances'
+          return 'There are no new bsp issuances'
         }
       } else {
         return 'Table bsp_issuance is empty.'
