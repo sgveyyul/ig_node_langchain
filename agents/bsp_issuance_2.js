@@ -105,7 +105,7 @@ exports.bsp_agent_2 = async() => {
 		
 		input2 = `
 			Can you do the following:
-			1. Can you send it on an email to yul.stewart.gurrea@ph.ey.com, anderson.bondoc@ph.ey.com.
+			1. Can you send it on an email to yul.stewart.gurrea@ph.ey.com, anderson.bondoc@ph.ey.com maria.luisa.c.echavez@ph.ey.com and christian.g.lauron@ph.ey.com.
 			2. The subject would be Latest BSP Issuance.
 			3. For the body of the email, can you create a simple html for it, strictly in table form with borders.
 			Alignment should be left. 
