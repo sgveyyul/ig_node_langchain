@@ -97,7 +97,7 @@ exports.bsp_agent_2 = async() => {
 			tools,
 		});
 
-		const input1 = "Can you list down all bsp issuances? I want the number, date issued and subject and their urls. Pls. add their corresponding labels and values."
+		const input1 = "Can you list down all bsp issuances? I want the number, date issued and subject and their urls. Pls label the values accordingly."
 		const result1 = await executorWithMemory.invoke({
 			input: input1,
 			chat_history: chatHistory
