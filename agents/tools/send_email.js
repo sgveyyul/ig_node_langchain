@@ -30,6 +30,10 @@ exports.sendEmailTool = async () => {
       };
       console.log('latestBSPIssuance', latestBSPIssuance)
       if(bsp_issuances && bsp_issuances.data && bsp_issuances.data.length > 0) {
+        // validate data
+        if(latestBSPIssuance.number.length < 4) {
+          return 'Invalid format of bsp issuance number.'
+        }
         const exists = bsp_issuances.data.some(issuance =>
           issuance.number === latestBSPIssuance.number &&
           issuance.date_issued === latestBSPIssuance.date &&
