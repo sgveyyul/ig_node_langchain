@@ -143,7 +143,7 @@ exports.bsp_agent_2 = async() => {
 		// });
 		// chatHistory.push(new HumanMessage(input3));
 		// chatHistory.push(new AIMessage(result3.output));
-
+    console.log(chatHistory)
 		return {
 			code: 0,
 			data: chatHistory
@@ -158,6 +158,7 @@ exports.bsp_agent_2 = async() => {
 
 const load_webpage = async(url) => {
 	try{
+    console.log('Loading web page.')
 		const browser = await puppeteer.launch({
 			headless: "new",
 			args: ["--no-sandbox", "--disable-setuid-sandbox"],
@@ -181,6 +182,7 @@ const load_webpage = async(url) => {
 }
 
 const split_docs = async(docs) => {
+  console.log('Splitting documents.')
 	const splitter = new RecursiveCharacterTextSplitter({
 		chunkSize: 1500,
 		chunkOverlap: 20

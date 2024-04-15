@@ -4,7 +4,7 @@ const nodemailer = require('nodemailer');
 const { z } = require("zod");
 const { DynamicStructuredTool } = require("@langchain/core/tools");
 
-const BSPIssuance = require('../../models/bsp_issuance');
+const BSPRegulations = require('../../models/bsp_issuance');
 
 const _ = require('lodash');
 
@@ -22,7 +22,7 @@ exports.sendEmailTool = async () => {
     }),
     func: async ({ to, subject, body, date, number, bsp_subject }) => {
       console.log('emails', to)
-      const bsp_issuances = await BSPIssuance.listAll()
+      const bsp_issuances = await BSPRegulations.listAll()
       console.log('bsp_issuances', bsp_issuances)
       const latestBSPIssuance = {
         date: date,
