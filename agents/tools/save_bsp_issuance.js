@@ -31,9 +31,9 @@ exports.saveBSPIssuance = async () => {
               if(bsp_arr[j].number !== existing_bsp.data[i].number && bsp_arr[j].date_issued !== existing_bsp.data[i].date_issued) {
                   // console.log(bsp_arr[j].number, 'BSP_ISSUANCE', bsp_arr[j].date_issued, bsp_arr[j].subject, bsp_arr[j].url)
                   await BSPRegulations.create(bsp_arr[j].number, 'BSP_ISSUANCE', bsp_arr[j].date_issued, bsp_arr[j].subject, bsp_arr[j].url)
-                  return `BSP Issuance with ${bsp_arr[j].number} is saved to database.`
               }
-           }
+            }
+            return `BSP Issuances with numbers ${bsp_arr.map(v => `"${v.number}"`).join(', ')} is saved to database.`
           } else {
             return 'No new bsp issuance to save.'
           }
