@@ -3,8 +3,8 @@ const { sequelize } = require('../config/db.config.js')
 
 const moment = require('moment')
 
-const BSPIssuance = sequelize.define(
-  'bsp_issuance', 
+const BSPRegulations = sequelize.define(
+  'BSP_Regulations', 
   {
     id: {
       type: DataTypes.INTEGER,
@@ -47,7 +47,7 @@ const BSPIssuance = sequelize.define(
 )
 
 create = async (number, category, date_issued, subject, url) => {
-  return await BSPIssuance.create({
+  return await BSPRegulations.create({
     number: number,
     category: category,
     date_issued: date_issued,
@@ -72,7 +72,30 @@ create = async (number, category, date_issued, subject, url) => {
 }
 
 listAll = async () => {
-  return await BSPIssuance.findAll({
+  return await BSPRegulations.findAll({
+    order: [['date_issued', 'DESC']],
+		limit: 10
+  })
+    .then(async (result) => {
+      return {
+        code: 0,
+        success: true,
+        msg: `Success.`,
+        data: result.map(item => item.get({ plain: true }))
+      }
+    })
+    .catch(async (err) => {
+      return {
+        code: 1,
+        success: false,
+        msg: `Unsuccessful. ${err}`
+      }
+    });
+}
+
+list = async (condition) => {
+  return await BSPRegulations.findAll({
+    where: condition,
     order: [['date_issued', 'DESC']],
 		limit: 10
   })
@@ -94,7 +117,7 @@ listAll = async () => {
 }
 
 module.exports = {
-	BSPIssuance,
+	BSPRegulations,
   create,
   listAll
 }

@@ -6,21 +6,16 @@ const { DynamicStructuredTool } = require("@langchain/core/tools");
 
 const BSPRegulations = require('../../models/bsp_issuance');
 
-exports.saveBSPIssuance = async () => {
-  const bspSchema = z.object({
-      number: z.string().describe(`the number of the bsp issuance`),
-      date_issued: z.string().describe(`the issued date of the bsp issuance`),
-      subject: z.string().describe(`the subject of the bsp issuance`),
-      url: z.string().describe(`the url link of the bsp list`)
-  });
-
+exports.readSignedDocument = async () => {
   return new DynamicStructuredTool({
-    name: "save-bsp-issuance",
+    name: "read-bsp-issuance-signed-document",
     description: "Tool for saving bsp issuances in the database.",
     schema: z.object({
-      bsp_arr: z.array(bspSchema).describe(`object list of all bsp issuances. composed of number, date issued, subject and url.`),
+      number: z.string().describe(`the latest issued number on the bsp list`),
+      subject: z.string().describe(`the latest issued subject on the bsp list`), 
+      url: z.string().describe(`url of the signed document.`)
     }),
-    func: async ({ bsp_arr }) => {
+    func: async ({ number, subject, url }) => {
         const existing_bsp = await BSPRegulations.listAll()
         for(var i in existing_bsp.data) {
             for(var j in bsp_arr) {

@@ -28,8 +28,7 @@ const { OpenAIFunctionsAgentOutputParser } = require("langchain/agents/openai/ou
 
 const { sendEmailTool } = require('./tools/send_email')
 const { saveBSPIssuance } = require('./tools/save_bsp_issuance')
-
-const BSPRegulations = require('../models/bsp_issuance');
+const { readSignedDocument } = require('./tools/read_signed_document')
 
 const now = new Date().toISOString().split('T')[0];
 
@@ -40,10 +39,9 @@ process.env['LANGCHAIN_ENDPOINT'] = process.env.LANGCHAIN_ENDPOINT
 process.env['LANGCHAIN_API_KEY'] = process.env.LANGCHAIN_API_KEY
 process.env['LANGCHAIN_PROJECT'] = process.env.LANGCHAIN_PROJECT
 
-exports.bsp_agent_2 = async() => {
+exports.bsSummarizerAgent = async() => {
 	try {
-    const existing_bsp = await BSPRegulations.listAll()
-		url = "https://www.bsp.gov.ph/SitePages/Regulations/RegulationsList.aspx?TabId=1"
+		url = "https://www.bsp.gov.ph/SitePages/Regulations/RegulationDisp.aspx?ItemId=4991"
 		const rawDocs = await load_webpage(url)
 
 		const splitted_docs = await split_docs(rawDocs)
@@ -97,43 +95,25 @@ exports.bsp_agent_2 = async() => {
 			tools,
 		});
 
-		const input1 = "Can you list down all bsp issuances? I want the number, date issued and subject and their urls."
+		input1 = "Can you get the link of the signed document."
 		const result1 = await executorWithMemory.invoke({
 			input: input1,
 			chat_history: chatHistory
 		});
 		chatHistory.push(new HumanMessage(input1));
 		chatHistory.push(new AIMessage(result1.output));
-
-    const input2 = `Based on the list you have scraped and list of existing bsp issuances which are 
-    ${existing_bsp.data}
-    Can you compare both list and get the bsp issuances that are missing in the existing one.
-    Create a list of objects for it. The keys of the object are number, date_issued, subject and url.
-    .`
+		
+		input2 = `
+			Can you summarize the signed document.
+		`
 		const result2 = await executorWithMemory.invoke({
 			input: input2,
 			chat_history: chatHistory
 		});
 		chatHistory.push(new HumanMessage(input2));
 		chatHistory.push(new AIMessage(result2.output));
-		
-		// const input2 = `
-		// 	Can you do the following:
-		// 	1. Can you send it on an email to yul.stewart.gurrea@ph.ey.com, anderson.bondoc@ph.ey.com, maria.luisa.c.echavez@ph.ey.com and christian.g.lauron@ph.ey.com.
-		// 	2. The subject would be Latest BSP Issuance.
-		// 	3. For the body of the email, can you create a simple html for it, strictly in table form with borders.
-		// 	Alignment should be left. 
-		// 	On the bottom of this, please include where you got the information from. Use this ${url}. 
-		// 	Then end the email with a thank you. Only send the email if the latest issued date on the bsp list is equal to today.
-		// `
-		// const result2 = await executorWithMemory.invoke({
-		// 	input: input2,
-		// 	chat_history: chatHistory
-		// });
-		// chatHistory.push(new HumanMessage(input2));
-		// chatHistory.push(new AIMessage(result2.output));
 
-		// const input3 = `
+		// input3 = `
 		// 	Can you convert the bsp issuances in to a list and save it on the database. The keys of the object are
 		// 	number, date_issued, subject and url.
 		// `
@@ -144,15 +124,9 @@ exports.bsp_agent_2 = async() => {
 		// chatHistory.push(new HumanMessage(input3));
 		// chatHistory.push(new AIMessage(result3.output));
 
-		return {
-			code: 0,
-			data: chatHistory
-		}
+		console.log('chatHistory', chatHistory)
 	} catch(e) {
-		return {
-			code: 1,
-			error: e
-		}
+		console.log(e)
 	}
 }
 
