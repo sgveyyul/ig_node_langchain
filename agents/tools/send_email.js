@@ -26,10 +26,10 @@ exports.sendEmailTool = async () => {
       date: z.string().describe(`the latest issued date on the bsp list`),
       number: z.string().describe(`the latest issued number on the bsp list`),
       bsp_subject: z.string().describe(`the latest issued subject on the bsp list`),
-      bsp_arr: z.array(bspSchema).describe(`object list list C.`)
+      new_values: z.boolean().describe('boolean if there are new bsp issuance in list C')
     }),
-    func: async ({ to, subject, body, date, number, bsp_subject, bsp_arr }) => {
-      console.log('emails', to, bsp_arr)
+    func: async ({ to, subject, body, date, number, bsp_subject, bsp_arr, new_values}) => {
+      console.log('emails', to, bsp_arr, new_values)
       const bsp_issuances = await BSPRegulations.listAll()
       console.log('bsp_issuances', bsp_issuances)
       const latestBSPIssuance = {

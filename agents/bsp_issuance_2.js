@@ -113,7 +113,8 @@ exports.bsp_agent_2 = async() => {
 
     const input2 = `Lets name the list above list A and this list of objects as list B ${JSON.stringify(existing_bsp.data, null, 2)}. 
     Can you compare list A and B using their keys number and date_issued, and get the elements that are in list A but not in list B.
-    Create a list of objects for it and lets call it List C. The keys of the object are number, date_issued, subject and url.
+    Create a list of objects for it and lets call it List C. The keys of the object are number, date_issued, subject and url. If there are none,
+    just say list C is empty.
     .`
 		const result2 = await executorWithMemory.invoke({
 			input: input2,
@@ -124,7 +125,7 @@ exports.bsp_agent_2 = async() => {
 		
 		const input3 = `
 			Can you do the following:
-      1. What are the values in list C?
+      1. Based on your comparison, are there new bsp issuance?
 			2. Can you send it on an email to yul.stewart.gurrea@ph.ey.com.
 			3. The subject would be Latest BSP Issuance.
 			4. For the body of the email, can you create a simple html for List C, strictly in table form with borders inside and out.
