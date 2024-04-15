@@ -124,7 +124,7 @@ exports.bsp_agent_2 = async() => {
 		
 		const input3 = `
 			Can you do the following:
-      1. can you set bsp_arr as List C.
+      1. What are the values in list C?
 			2. Can you send it on an email to yul.stewart.gurrea@ph.ey.com.
 			3. The subject would be Latest BSP Issuance.
 			4. For the body of the email, can you create a simple html for List C, strictly in table form with borders inside and out.
