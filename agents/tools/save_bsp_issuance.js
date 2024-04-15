@@ -23,16 +23,21 @@ exports.saveBSPIssuance = async () => {
     func: async ({ bsp_arr }) => {
         const existing_bsp = await BSPRegulations.listAll()
         for(var i in existing_bsp.data) {
+          if(bsp_arr.length === 0) {
             for(var j in bsp_arr) {
-                if(bsp_arr[j].number.length < 4) {
-                  return 'Invalid format of bsp issuance number.'
-                }
-                if(bsp_arr[j].number !== existing_bsp.data[i].number && bsp_arr[j].date_issued !== existing_bsp.data[i].date_issued) {
-                    // console.log(bsp_arr[j].number, 'BSP_ISSUANCE', bsp_arr[j].date_issued, bsp_arr[j].subject, bsp_arr[j].url)
-                    await BSPRegulations.create(bsp_arr[j].number, 'BSP_ISSUANCE', bsp_arr[j].date_issued, bsp_arr[j].subject, bsp_arr[j].url)
-                    return `BSP Issuance with ${bsp_arr[j].number} is saved to database.`
-                }
-            }
+              if(bsp_arr[j].number.length < 4) {
+                return 'Invalid format of bsp issuance number.'
+              }
+              if(bsp_arr[j].number !== existing_bsp.data[i].number && bsp_arr[j].date_issued !== existing_bsp.data[i].date_issued) {
+                  // console.log(bsp_arr[j].number, 'BSP_ISSUANCE', bsp_arr[j].date_issued, bsp_arr[j].subject, bsp_arr[j].url)
+                  await BSPRegulations.create(bsp_arr[j].number, 'BSP_ISSUANCE', bsp_arr[j].date_issued, bsp_arr[j].subject, bsp_arr[j].url)
+                  return `BSP Issuance with ${bsp_arr[j].number} is saved to database.`
+              }
+           }
+          } else {
+            return 'No new bsp issuance to save.'
+          }
+            
         }
     }
   })
