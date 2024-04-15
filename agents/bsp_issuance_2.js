@@ -140,16 +140,17 @@ exports.bsp_agent_2 = async() => {
 		chatHistory.push(new HumanMessage(input3));
 		chatHistory.push(new AIMessage(result3.output));
 
-		// const input4 = `
-		// 	Can you save list C on the database. The keys of the objects are
-		// 	number, date_issued, subject and url.
-		// `
-		// const result4 = await executorWithMemory.invoke({
-		// 	input: input4,
-		// 	chat_history: chatHistory
-		// });
-		// chatHistory.push(new HumanMessage(input4));
-		// chatHistory.push(new AIMessage(result4.output));
+		const input4 = `
+			If list C is not empty, can you save list C on the database. The keys of the objects are
+			number, date_issued, subject and url.
+      If list C is empty, do not save it on database.
+		`
+		const result4 = await executorWithMemory.invoke({
+			input: input4,
+			chat_history: chatHistory
+		});
+		chatHistory.push(new HumanMessage(input4));
+		chatHistory.push(new AIMessage(result4.output));
     console.log(chatHistory)
 		return {
 			code: 0,
