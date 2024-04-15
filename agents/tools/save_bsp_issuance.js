@@ -16,7 +16,7 @@ exports.saveBSPIssuance = async () => {
 
   return new DynamicStructuredTool({
     name: "save-bsp-issuance",
-    description: "Tool for saving bsp issuances in the database.",
+    description: "Tool for saving bsp issuances in the database. The keyword here is save in the database.",
     schema: z.object({
       bsp_arr: z.array(bspSchema).describe(`object list of all bsp issuances. composed of number, date issued, subject and url.`),
     }),
