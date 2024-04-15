@@ -8,6 +8,13 @@ const BSPRegulations = require('../../models/bsp_issuance');
 
 const _ = require('lodash');
 
+const bspSchema = z.object({
+  number: z.string().describe(`the number of the bsp issuance`),
+  date_issued: z.string().describe(`the issued date of the bsp issuance`),
+  subject: z.string().describe(`the subject of the bsp issuance`),
+  url: z.string().describe(`the url link of the bsp list`)
+});
+
 exports.sendEmailTool = async () => {
   return new DynamicStructuredTool({
     name: "send-email",
@@ -18,10 +25,11 @@ exports.sendEmailTool = async () => {
       body: z.string().describe("the message of the email"),
       date: z.string().describe(`the latest issued date on the bsp list`),
       number: z.string().describe(`the latest issued number on the bsp list`),
-      bsp_subject: z.string().describe(`the latest issued subject on the bsp list`)
+      bsp_subject: z.string().describe(`the latest issued subject on the bsp list`),
+      bsp_arr: z.array(bspSchema).describe(`object list of bsp issuances that are that are in List A but not in List B.`)
     }),
-    func: async ({ to, subject, body, date, number, bsp_subject }) => {
-      console.log('emails', to)
+    func: async ({ to, subject, body, date, number, bsp_subject, bsp_arr }) => {
+      console.log('emails', to, bsp_arr)
       const bsp_issuances = await BSPRegulations.listAll()
       console.log('bsp_issuances', bsp_issuances)
       const latestBSPIssuance = {
