@@ -16,7 +16,7 @@ exports.readSignedDocument = async () => {
       url: z.string().describe(`url of the signed document.`)
     }),
     func: async ({ number, subject, url }) => {
-        const existing_bsp = await BSPRegulations.listAll()
+        const existing_bsp = await BSPRegulations.list({})
         for(var i in existing_bsp.data) {
             for(var j in bsp_arr) {
                 if(bsp_arr[j].number.length < 4) {
