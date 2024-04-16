@@ -130,8 +130,8 @@ exports.bsp_agent_2 = async() => {
 		chatHistory.push(new HumanMessage(input2));
 		chatHistory.push(new AIMessage(result2.output));
     
-    const input3 = `Can you compare list A and B by their number and date_issued, and get the elements that are in list A but not in list B.
-		Create a list of objects for it and lets call it List C.
+    const input3 = `Can you compare list A and B by their number and date issued, and get the elements that are in list A but not in list B.
+		Create a list of objects for it and add it to List C.
 		.`
     const result3 = await executorWithMemory.invoke({
       input: input3,
@@ -140,7 +140,7 @@ exports.bsp_agent_2 = async() => {
     chatHistory.push(new HumanMessage(input3));
     chatHistory.push(new AIMessage(result3.output));
 
-    const input4 = `What are the element in list C?`
+    const input4 = `Can you show list C.`
     const result4 = await executorWithMemory.invoke({
       input: input4,
       chat_history: chatHistory
