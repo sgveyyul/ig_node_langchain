@@ -42,7 +42,6 @@ process.env['LANGCHAIN_PROJECT'] = process.env.LANGCHAIN_PROJECT
 
 exports.bsp_agent_2 = async() => {
 	try {
-    const existing_bsp = await BSPRegulations.listAll()
 		url = "https://www.bsp.gov.ph/SitePages/Regulations/RegulationsList.aspx?TabId=1"
 		const rawDocs = await load_webpage(url)
 
@@ -131,8 +130,7 @@ exports.bsp_agent_2 = async() => {
 		chatHistory.push(new AIMessage(result2.output));
     
     const input3 = `Can you compare list A and B by their number and date issued, and get the elements that are in list A but not in list B.
-		Create a list of objects for it and add it to List C.
-		.`
+		Create a list of objects for these elements and add it to List C.`
     const result3 = await executorWithMemory.invoke({
       input: input3,
       chat_history: chatHistory
@@ -148,34 +146,34 @@ exports.bsp_agent_2 = async() => {
     chatHistory.push(new HumanMessage(input4));
     chatHistory.push(new AIMessage(result4.output));
 		
-		// const input4 = `
-		// 	Can you do the following:
-    //   1. Based on your comparison, is list C empty or not?
-		// 	2. Can you send it on an email to yul.stewart.gurrea@ph.ey.com.
-		// 	3. The subject would be Latest BSP Issuance.
-		// 	4. For the body of the email, can you create a simple html for List C, strictly in table form with borders inside and out.
-		// 	Alignment should be left. 
-		// 	On the bottom of this, please include where you got the information from. Use this ${url}. 
-		// 	Then end the email with a thank you. Only send the email if the latest issued date on the bsp list is equal to today.
-		// `
-		// const result4 = await executorWithMemory.invoke({
-		// 	input: input4,
-		// 	chat_history: chatHistory
-		// });
-		// chatHistory.push(new HumanMessage(input4));
-		// chatHistory.push(new AIMessage(result4.output));
+		const input5 = `
+			Can you do the following:
+      1. Based on your comparison, is list C empty or not?
+			2. Can you send it on an email to yul.stewart.gurrea@ph.ey.com.
+			3. The subject would be Latest BSP Issuance.
+			4. For the body of the email, can you create a simple html for List C, strictly in table form with borders inside and out.
+			Alignment should be left. 
+			On the bottom of this, please include where you got the information from. Use this ${url}. 
+			Then end the email with a thank you. Only send the email if the latest issued date on the bsp list is equal to today.
+		`
+		const result5 = await executorWithMemory.invoke({
+			input: input5,
+			chat_history: chatHistory
+		});
+		chatHistory.push(new HumanMessage(input5));
+		chatHistory.push(new AIMessage(result5.output));
 
-		// const input5 = `
+		// const input6 = `
 		// 	If list C is not empty, can you save list C on the database. The keys of the objects are
 		// 	number, date_issued, subject and url.
     //   If list C is empty, do not save it on database.
 		// `
-		// const result5 = await executorWithMemory.invoke({
-		// 	input: input5,
+		// const result6 = await executorWithMemory.invoke({
+		// 	input: input6,
 		// 	chat_history: chatHistory
 		// });
-		// chatHistory.push(new HumanMessage(input5));
-		// chatHistory.push(new AIMessage(result5.output));
+		// chatHistory.push(new HumanMessage(input6));
+		// chatHistory.push(new AIMessage(result6.output));
     console.log(chatHistory)
 		return {
 			code: 0,

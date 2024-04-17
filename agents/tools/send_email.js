@@ -26,33 +26,41 @@ exports.sendEmailTool = async () => {
       date: z.string().describe(`the latest issued date on the bsp list`),
       number: z.string().describe(`the latest issued number on the bsp list`),
       bsp_subject: z.string().describe(`the latest issued subject on the bsp list`),
-      new_values: z.boolean().describe('boolean if there are new bsp issuance in list C')
+      bsp_arr: z.array(bspSchema).describe(`elements that are in list C`)
     }),
-    func: async ({ to, subject, body, date, number, bsp_subject, new_values}) => {
-      console.log('emails', to, new_values)
-      const bsp_issuances = await BSPRegulations.listAll()
-      console.log('bsp_issuances', bsp_issuances)
-      const latestBSPIssuance = {
-        date: date,
-        number: number,
-        bsp_subject: bsp_subject
-      };
-      if(!new_values) {
-        return 'There are no new bsp issuances. No email have been sent.'
-      }
-      console.log('latestBSPIssuance', latestBSPIssuance)
-      if(bsp_issuances && bsp_issuances.data && bsp_issuances.data.length > 0) {
-        // validate data
-        if(latestBSPIssuance.number.length < 4) {
-          return 'Invalid format of bsp issuance number. No email have been sent.'
-        }
-        for(var i in to) {
-          await send_email(to[i], subject, body)
-        }
-        return `The email was sent to the followning emails ${to.map(v => `"${v}"`).join(', ')}. the subject of the email was ${subject}. The body of the email is ${body}.`
-      } else {
-        return 'Table bsp_issuance is empty. No email have been sent.'
-      }
+    func: async ({ to, subject, body, date, number, bsp_subject, bsp_arr }) => {
+      console.log('emails', to, bsp_arr)
+      // const bsp_issuances = await BSPRegulations.listAll()
+      // console.log('bsp_issuances', bsp_issuances)
+      // const latestBSPIssuance = {
+      //   date: date,
+      //   number: number,
+      //   bsp_subject: bsp_subject
+      // };
+      // console.log('latestBSPIssuance', latestBSPIssuance)
+      // if(bsp_issuances && bsp_issuances.data && bsp_issuances.data.length > 0) {
+      //   // validate data
+      //   if(latestBSPIssuance.number.length < 4) {
+      //     return 'Invalid format of bsp issuance number.'
+      //   }
+      //   const exists = bsp_issuances.data.some(issuance =>
+      //     issuance.number === latestBSPIssuance.number &&
+      //     issuance.date_issued === latestBSPIssuance.date &&
+      //     issuance.subject === latestBSPIssuance.bsp_subject
+      //   );
+      //   if(!exists) {
+      //     console.log('not exists')
+      //     for(var i in to) {
+      //       await send_email(to[i], subject, body)
+      //     }
+      //     return `The email was sent to the followning emails ${to.map(v => `"${v}"`).join(', ')}. the subject of the email was ${subject}. The body of the email is ${body}.`
+      //   } else {
+      //     return 'There are no new bsop issuances'
+      //   }
+      // } else {
+      //   return 'Table bsp_issuance is empty.'
+      // }
+      
     }
   })
 }
