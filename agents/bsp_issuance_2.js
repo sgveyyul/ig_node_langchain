@@ -42,6 +42,7 @@ process.env['LANGCHAIN_PROJECT'] = process.env.LANGCHAIN_PROJECT
 
 exports.bsp_agent_2 = async() => {
 	try {
+    const existing_bsp = await BSPRegulations.listAll()
 		url = "https://www.bsp.gov.ph/SitePages/Regulations/RegulationsList.aspx?TabId=1"
 		const rawDocs = await load_webpage(url)
 
