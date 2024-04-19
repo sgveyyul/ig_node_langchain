@@ -29,7 +29,9 @@ exports.sendEmailTool = async () => {
         // validate data
         console.log('bsp_arr', bsp_arr)
         if(bsp_arr && bsp_arr.length > 0) {
-          await send_email(to[i], subject, body)
+          for(var i in to) {
+            await send_email(to[i], subject, body)
+          }
           return `The email was sent successfully.`
         } else {
           return `No email was sent since there are no new bsp issuances.`

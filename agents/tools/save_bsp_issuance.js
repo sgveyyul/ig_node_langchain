@@ -18,8 +18,7 @@ exports.saveBSPIssuance = async () => {
     name: "save-bsp-issuance",
     description: "Tool for saving bsp issuances in the database. The keyword here is save in the database.",
     schema: z.object({
-      bsp_arr: z.array(bspSchema).describe(`object list of all bsp issuances. composed of number, date issued, subject and url.`),
-      new_values: z.boolean().describe('boolean if there are new bsp issuance in list C')
+      bsp_arr: z.array(bspSchema).describe(`list of objects in list B`),
     }),
     func: async ({ bsp_arr, new_values }) => {
         console.log('new_values', new_values)
