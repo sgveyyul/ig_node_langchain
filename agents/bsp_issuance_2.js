@@ -46,6 +46,7 @@ exports.bsp_agent_2 = async() => {
 		url = "https://www.bsp.gov.ph/SitePages/Regulations/RegulationsList.aspx?TabId=1"
 		const web_bsp_issuances = await load_webpage(url)
     if(web_bsp_issuances.code === 1) {
+      console.log(web_bsp_issuances.msg)
       return web_bsp_issuances
     }
 		// const splitted_docs = await split_docs(rawDocs)
@@ -218,6 +219,7 @@ const load_webpage = async(url) => {
 		// const docHTMLContent = new Document({ pageContent: `${JSON.stringify(tableData, null, 2)}`, metadata: {source: url} });
 		return {
       code: 0,
+      msg: 'Success',
       data: tableData
     }
 	} catch(e) {
