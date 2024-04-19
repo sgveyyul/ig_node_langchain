@@ -113,7 +113,7 @@ exports.bsp_agent_2 = async() => {
 		chatHistory.push(new AIMessage(result2.output));
 
 		const input3 = `
-      If list B is not empty, can you do the following:
+      Can you do the following:
 			1. Can you send it on an email to yul.stewart.gurrea@ph.ey.com.
 			2. The subject would be Latest BSP Issuance.
 			3. For the body of the email, can you create a simple html for List C, strictly in table form with borders inside and out.
