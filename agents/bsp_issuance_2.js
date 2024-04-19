@@ -194,7 +194,7 @@ const load_webpage = async(url) => {
 	try{
     console.log('Loading web page.')
 		const browser = await puppeteer.launch({
-			headless: "new",
+			headless: false,
 			args: ["--no-sandbox", "--disable-setuid-sandbox"],
 			'ignoreHTTPSErrors': true
 		});
