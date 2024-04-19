@@ -50,7 +50,7 @@ exports.bsp_agent_2 = async() => {
 			splitted_docs,
 			embeddingsModel
 		);
-		const retriever = vectorstore.asRetriever(10);
+		const retriever = vectorstore.asRetriever(20);
 
 		const MEMORY_KEY = "chat_history";
 		const chatHistory = [];
