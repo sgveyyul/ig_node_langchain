@@ -5,11 +5,8 @@ const cookieParser = require('cookie-parser')
 var cors = require('cors')
 const { run_cron } = require('./cron')
 
-
 const uploadRoutes = require('./routes/upload.js')
 const gptRoutes = require('./routes/gpt.js')
-
-const { bsp_agent_2 } = require('./agents/bsp_issuance_2')
 
 const app = express()
 
@@ -31,7 +28,7 @@ const port = process.env.PORT || 8000;
 app.use('/api/v1', uploadRoutes);
 app.use('/api/v1', gptRoutes);
 
-bsp_agent_2()
+run_cron()
 
 // run application
 app.listen(port, () => {
