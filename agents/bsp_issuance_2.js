@@ -42,27 +42,25 @@ process.env['LANGCHAIN_PROJECT'] = process.env.LANGCHAIN_PROJECT
 
 exports.bsp_agent_2 = async() => {
 	try {
-    const existing_bsp = await BSPRegulations.listAll()
 		url = "https://www.bsp.gov.ph/SitePages/Regulations/RegulationsList.aspx?TabId=1"
-		const rawDocs = await load_webpage(url)
-		const splitted_docs = await split_docs(rawDocs)
-		const vectorstore = await MemoryVectorStore.fromDocuments(
-			splitted_docs,
-			embeddingsModel
-		);
-		const retriever = vectorstore.asRetriever(20);
+		const web_bsp_issuances = await load_webpage(url)
+		// const splitted_docs = await split_docs(rawDocs)
+		// const vectorstore = await MemoryVectorStore.fromDocuments(
+		// 	splitted_docs,
+		// 	embeddingsModel
+		// );
+		// const retriever = vectorstore.asRetriever(20);
 
 		const MEMORY_KEY = "chat_history";
 		const chatHistory = [];
 				
-		const bspIssuanceRetrieverTool = createRetrieverTool(retriever, {
-			name: "bsp_issuance_search",
-			description:
-				"If you want to get values of bsp issuances, use this tool",
-		});
+		// const bspIssuanceRetrieverTool = createRetrieverTool(retriever, {
+		// 	name: "bsp_issuance_search",
+		// 	description:
+		// 		"If you want to get values of bsp issuances, use this tool",
+		// });
 
 		const tools = [
-			bspIssuanceRetrieverTool,
 			await sendEmailTool(),
 			await saveBSPIssuance()
 		];
@@ -94,15 +92,7 @@ exports.bsp_agent_2 = async() => {
 			tools,
 		});
 
-		const input1 = `Can you list down all bsp issuances? I want the number, date issued and subject and their urls. Please format the output with labels for each field.
-      This is the sample format.
-      1. Number: number
-      Date Issued: date issued
-      Subject: subject
-      url: url
-
-      Lets then call this list, List A.
-    `
+		const input1 = `I have a list of objects ${JSON.stringify(web_bsp_issuances, null, 2)}. Lets call this list A.`
 		const result1 = await executorWithMemory.invoke({
 			input: input1,
 			chat_history: chatHistory
@@ -110,16 +100,7 @@ exports.bsp_agent_2 = async() => {
 		chatHistory.push(new HumanMessage(input1));
 		chatHistory.push(new AIMessage(result1.output));
 
-    const input2 = `I have a list of objects, ${JSON.stringify(existing_bsp.data, null, 2)}. 
-      Can we change the format to this format:
-      This is the sample format.
-        1. Number: number
-        Date Issued: date issued
-        Subject: subject
-        url: url
-
-      Let then call this list B.
-    `
+    const input2 = `Can you compare list A to the existing bsp issuances we have?`
 		const result2 = await executorWithMemory.invoke({
 			input: input2,
 			chat_history: chatHistory
@@ -127,41 +108,22 @@ exports.bsp_agent_2 = async() => {
 		chatHistory.push(new HumanMessage(input2));
 		chatHistory.push(new AIMessage(result2.output));
     
-    // const input3 = `Can you compare list A and B by their number and date issued, and get the elements that are in list A but not in list B.
-		// Create a list of objects for these elements and add it to List C.`
-    const input3 = `Can you compare list A and B by their number and date issued, and get the elements that are in list A but not in list B.
-		  Create a list of objects for these elements and add it to List C.`
-    const result3 = await executorWithMemory.invoke({
-      input: input3,
-      chat_history: chatHistory
-    });
-    chatHistory.push(new HumanMessage(input3));
-    chatHistory.push(new AIMessage(result3.output));
-
-    const input4 = `Can you show list C.`
-    const result4 = await executorWithMemory.invoke({
-      input: input4,
-      chat_history: chatHistory
-    });
-    chatHistory.push(new HumanMessage(input4));
-    chatHistory.push(new AIMessage(result4.output));
-		
-		const input5 = `
-			Can you do the following:
-      1. Based on your comparison, is list C empty or not?
-			2. Can you send it on an email to yul.stewart.gurrea@ph.ey.com.
-			3. The subject would be Latest BSP Issuance.
-			4. For the body of the email, can you create a simple html for List C, strictly in table form with borders inside and out.
-			Alignment should be left. 
-			On the bottom of this, please include where you got the information from. Use this ${url}. 
-			Then end the email with a thank you. Only send the email if the latest issued date on the bsp list is equal to today.
-		`
-		const result5 = await executorWithMemory.invoke({
-			input: input5,
-			chat_history: chatHistory
-		});
-		chatHistory.push(new HumanMessage(input5));
-		chatHistory.push(new AIMessage(result5.output));
+		// const input5 = `
+		// 	Can you do the following:
+    //   1. Based on your comparison, is list C empty or not?
+		// 	2. Can you send it on an email to yul.stewart.gurrea@ph.ey.com.
+		// 	3. The subject would be Latest BSP Issuance.
+		// 	4. For the body of the email, can you create a simple html for List C, strictly in table form with borders inside and out.
+		// 	Alignment should be left. 
+		// 	On the bottom of this, please include where you got the information from. Use this ${url}. 
+		// 	Then end the email with a thank you. Only send the email if the latest issued date on the bsp list is equal to today.
+		// `
+		// const result5 = await executorWithMemory.invoke({
+		// 	input: input5,
+		// 	chat_history: chatHistory
+		// });
+		// chatHistory.push(new HumanMessage(input5));
+		// chatHistory.push(new AIMessage(result5.output));
 
 		// const input6 = `
 		// 	If list C is not empty, can you save list C on the database. The keys of the objects are
