@@ -27,17 +27,10 @@ exports.sendEmailTool = async () => {
     func: async ({ to, subject, body, bsp_arr }) => {
       // validate data
       console.log('bsp_arr', bsp_arr)
-      if(!exists) {
-        console.log('not exists')
-        for(var i in to) {
-          await send_email(to[i], subject, body)
-        }
-        return `The email was sent to the followning emails ${to.map(v => `"${v}"`).join(', ')}. the subject of the email was ${subject}. The body of the email is ${body}.`
-      } else {
-        return 'There are no new bsop issuances'
-      }
-      
-      
+      // for(var i in to) {
+      //   await send_email(to[i], subject, body)
+      // }
+      // return `The email was sent to the followning emails ${to.map(v => `"${v}"`).join(', ')}. the subject of the email was ${subject}. The body of the email is ${body}.`
     }
   })
 }
