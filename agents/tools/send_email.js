@@ -15,24 +15,28 @@ const bspSchema = z.object({
 });
 
 exports.sendEmailTool = async () => {
-  return new DynamicStructuredTool({
-    name: "send-email",
-    description: "if you want to send an email to a user, user this tool.",
-    schema: z.object({
-      to: z.string().array().describe("array of user emails we will send out to"),
-      subject: z.string().describe("the subject of the email"),
-      body: z.string().describe("the message of the email"),
-      bsp_arr: z.array(bspSchema).describe(`list of objects in list B`)
-    }),
-    func: async ({ to, subject, body, bsp_arr }) => {
-      // validate data
-      console.log('bsp_arr', bsp_arr)
-      // for(var i in to) {
-      //   await send_email(to[i], subject, body)
-      // }
-      // return `The email was sent to the followning emails ${to.map(v => `"${v}"`).join(', ')}. the subject of the email was ${subject}. The body of the email is ${body}.`
-    }
-  })
+  try {
+    return new DynamicStructuredTool({
+      name: "send-email",
+      description: "if you want to send an email to a user, user this tool.",
+      schema: z.object({
+        to: z.string().array().describe("array of user emails we will send out to"),
+        subject: z.string().describe("the subject of the email"),
+        body: z.string().describe("the message of the email"),
+        bsp_arr: z.array(bspSchema).describe(`list of objects in list B`)
+      }),
+      func: async ({ to, subject, body, bsp_arr }) => {
+        // validate data
+        console.log('bsp_arr', bsp_arr)
+        // for(var i in to) {
+        //   await send_email(to[i], subject, body)
+        // }
+        // return `The email was sent to the followning emails ${to.map(v => `"${v}"`).join(', ')}. the subject of the email was ${subject}. The body of the email is ${body}.`
+      }
+    })
+  } catch(e) {
+    return `Error ${e}`
+  }
 }
 
 const send_email = async(to, subject, body) => {
