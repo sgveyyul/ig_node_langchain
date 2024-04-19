@@ -103,7 +103,7 @@ exports.bsp_agent_2 = async() => {
 		chatHistory.push(new AIMessage(result1.output));
 
 
-    const input2 = `Can you compare list A to the existing bsp issuances in the database and check if there are new issuances in list A.
+    const input2 = `Can you compare list A to the existing bsp issuances in the database. Check if there are bsp issuances in list A that are not in the databse.
     If there are, can we add it to list B.`
 		const result2 = await executorWithMemory.invoke({
 			input: input2,

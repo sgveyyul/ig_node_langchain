@@ -28,7 +28,12 @@ exports.getLatestBSPIssuance = async () => {
       const uniqueInA = bsp_arr.filter(a => 
         !existing_bsp_issuances.data.some(b => b.number === a.number && b.date_issued === a.date_issued));
       console.log('uniqueInA', uniqueInA)
-      return `${JSON.stringify(uniqueInA, null, 2)}`
+      if(uniqueInA && uniqueInA.length > 0) {
+        return `Here are the bsp issuance that are in list A ${JSON.stringify(uniqueInA, null, 2)} but not in our existing database.`
+      } else {
+        return `There are now new bsp issuances.`
+      }
+      
     }
   })
 }
