@@ -27,7 +27,7 @@ exports.getLatestBSPIssuance = async () => {
       const existing_bsp_issuances = await BSPRegulations.listAll()
       const uniqueInA = bsp_arr.filter(a => 
         !existing_bsp_issuances.data.some(b => b.number === a.number && b.date_issued === a.date_issued));
-      
+      console.log('uniqueInA', uniqueInA)
       return `${JSON.stringify(uniqueInA, null, 2)}`
     }
   })
