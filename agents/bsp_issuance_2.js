@@ -181,7 +181,7 @@ exports.bsp_agent_2 = async() => {
 }
 
 const load_webpage = async(url) => {
-	try{
+	try {
     console.log('Loading web page.')
 		const browser = await puppeteer.launch({
 			headless: true,
@@ -189,7 +189,7 @@ const load_webpage = async(url) => {
 			'ignoreHTTPSErrors': true
 		});
 		const page = await browser.newPage();
-		await page.goto(url, { waitUntil: 'networkidle2', timeout: 60000 })
+		const response = await page.goto(url, { waitUntil: 'networkidle2', timeout: 60000 })
 
     if (response.status() !== 200) {
       return {
