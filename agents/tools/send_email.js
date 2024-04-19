@@ -29,6 +29,15 @@ exports.sendEmailTool = async () => {
         // validate data
         console.log('bsp_arr', bsp_arr)
         if(bsp_arr && bsp_arr.length > 0) {
+          for(var i in bsp_arr) {
+            if(bsp_arr[i].number && bsp_arr[i].number.length < 4) {
+              return `I encountered an error when validating the data. No email was sent.`
+            }
+            if(bsp_arr[i].date_issued && !regex.test(bsp_arr[i].date_issued )) {
+              return `I encountered an error when validating the data. No email was sent.`
+            }
+          }
+          
           for(var i in to) {
             await send_email(to[i], subject, body)
           }
