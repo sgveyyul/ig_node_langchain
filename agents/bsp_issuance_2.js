@@ -213,12 +213,15 @@ const load_webpage = async(url) => {
 		});
 		const page = await browser.newPage();
 		await page.goto(url, { waitUntil: 'networkidle2', timeout: 60000 })
-		
 		await page.waitForSelector('#RegTable', { visible: true, timeout: 60000 });
-		const table = document.querySelector('#RegTable');
+
+    // Extract data from the table
+    const tableData = await page.evaluate(() => {
+      return document.querySelector('#RegTable');
+    })
+		
 		await browser.close()
-		const docHTMLContent = new Document({ pageContent: table, metadata: {source: url} });
-		// const docHTMLText = new Document({ pageContent: bodyText, metadata: {source: url} });
+		const docHTMLContent = new Document({ pageContent: tableData, metadata: {source: url} });
 		return docHTMLContent
 	} catch(e) {
 		console.log(e)
