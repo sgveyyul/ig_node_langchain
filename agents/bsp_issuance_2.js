@@ -209,7 +209,7 @@ const load_webpage = async(url) => {
 		
 		await browser.close()
 		// const docHTMLContent = new Document({ pageContent: `${JSON.stringify(tableData, null, 2)}`, metadata: {source: url} });
-		return docHTMLContent
+		return tableData
 	} catch(e) {
 		console.log(e)
 	}
