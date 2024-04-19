@@ -123,7 +123,23 @@ exports.bsp_agent_2 = async() => {
       Can you do the following:
 			1. Can you send it on an email to yul.stewart.gurrea@ph.ey.com.
 			2. The subject would be Latest BSP Issuance.
-			3. For the body of the email, can you create a simple html for List C, strictly in table form with borders inside and out.
+			3. For the body of the emailcan you create a simple html. Can you start it with a Hello Good Day, Here is a list of new BSP Issuance. 
+      Followed by List B. List B should strictltrictly in table format.
+      example of the table format is
+      <table>
+        <tr>
+          <th>Number</th>
+          <th>Date Issued</th>
+          <th>Subject</th>
+          <th>Link</th>
+        </tr>
+        <tr>
+          <td>number</td>
+          <td>date issued</td>
+          <td>subject</td>
+          <td>link</td>
+        </tr>
+      </table>
 			Alignment should be left. 
 			On the bottom of this, please include where you got the information from. Use this ${url}. 
 			Then end the email with a thank you. Only send the email if the latest issued date on the bsp list is equal to today.
