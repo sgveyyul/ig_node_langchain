@@ -9,6 +9,8 @@ const { run_cron } = require('./cron')
 const uploadRoutes = require('./routes/upload.js')
 const gptRoutes = require('./routes/gpt.js')
 
+const { bsp_agent_2 } = require('./agents/bsp_issuance_2')
+
 const app = express()
 
 process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = process.env.NODE_TLS_REJECT_UNAUTHORIZED;
@@ -29,7 +31,7 @@ const port = process.env.PORT || 8000;
 app.use('/api/v1', uploadRoutes);
 app.use('/api/v1', gptRoutes);
 
-run_cron()
+bsp_agent_2()
 
 // run application
 app.listen(port, () => {
