@@ -123,7 +123,7 @@ exports.bsp_agent_2 = async() => {
       Can you do the following:
 			1. Can you send it on an email to yul.stewart.gurrea@ph.ey.com.
 			2. The subject would be Latest BSP Issuance.
-			3. For the body of the emailcan you create a simple html. Can you start it with a Hello Good Day, Here is a list of new BSP Issuance. 
+			3. For the body of the email, can you create a simple html. Can you start it with a Greetings from Intelligo then followed by Here is a list of new BSP Issuance. 
       Followed by List B. List B should strictltrictly in table format.
       example of the table format is
       <style>
