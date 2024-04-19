@@ -61,8 +61,6 @@ exports.bsp_agent_2 = async() => {
 				"If you want to get values of bsp issuances, use this tool",
 		});
 
-    
-
 		const tools = [
 			bspIssuanceRetrieverTool,
 			await sendEmailTool(),
@@ -203,7 +201,8 @@ const load_webpage = async(url) => {
 
     // Extract data from the table
     const tableData = await page.evaluate(() => {
-      return document.querySelector('#RegTable');
+      const table = document.querySelector('#RegTable');
+      return table ? table.innerHTML : '';
     })
 		
 		await browser.close()
