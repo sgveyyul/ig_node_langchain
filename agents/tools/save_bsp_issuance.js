@@ -14,31 +14,33 @@ exports.saveBSPIssuance = async () => {
       url: z.string().describe(`the url link of the bsp list`)
   });
 
+  const regex = /^\d{4}-\d{2}-\d{2}$/;
+
   return new DynamicStructuredTool({
     name: "save-bsp-issuance",
     description: "Tool for saving bsp issuances in the database. The keyword here is save in the database.",
     schema: z.object({
       bsp_arr: z.array(bspSchema).describe(`list of objects in list B`),
     }),
-    func: async ({ bsp_arr, new_values }) => {
-        console.log('new_values', new_values)
-        const existing_bsp = await BSPRegulations.listAll()
-        for(var i in existing_bsp.data) {
-          if(bsp_arr.length === 0) {
-            for(var j in bsp_arr) {
-              if(bsp_arr[j].number.length < 4) {
-                return 'Invalid format of bsp issuance number.'
-              }
-              if(bsp_arr[j].number !== existing_bsp.data[i].number && bsp_arr[j].date_issued !== existing_bsp.data[i].date_issued) {
-                  // console.log(bsp_arr[j].number, 'BSP_ISSUANCE', bsp_arr[j].date_issued, bsp_arr[j].subject, bsp_arr[j].url)
-                  await BSPRegulations.create(bsp_arr[j].number, 'BSP_ISSUANCE', bsp_arr[j].date_issued, bsp_arr[j].subject, bsp_arr[j].url)
-              }
-            }
-            return `BSP Issuances with numbers ${bsp_arr.map(v => `"${v.number}"`).join(', ')} is saved to database.`
-          } else {
-            return 'No new bsp issuance to save.'
+    func: async ({ bsp_arr }) => {
+        console.log('bsp_arr', bsp_arr)
+        if(bsp_arr && bsp_arr.length === 0) {
+          return `There are no new bsp issuances to save in the database.`
+        }
+
+        for(var i in bsp_arr) {
+          if(bsp_arr[i].number && bsp_arr[i].number.length < 4) {
+            continue
           }
-            
+          if(bsp_arr[i].date_issued && !regex.test(bsp_arr[i].date_issued )) {
+            continue
+          }
+          try {
+            await BSPRegulations.create(bsp_arr[i].number, 'BSP_ISSUANCE', bsp_arr[i].date_issued, bsp_arr[i].subject, bsp_arr[i].url)
+          } catch(e) {
+            continue
+          }
+          return `All new bsp issuances with correct values are saved to the database.`
         }
     }
   })
