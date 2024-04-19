@@ -116,7 +116,7 @@ exports.bsp_agent_2 = async() => {
 			input: input4,
 			chat_history: chatHistory
 		});
-		chatHistory.push(new HumanMessage(input2));
+		chatHistory.push(new HumanMessage(input4));
 		chatHistory.push(new AIMessage(result4.output));
 
 		const input3 = `
