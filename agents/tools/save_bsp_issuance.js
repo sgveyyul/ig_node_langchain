@@ -23,11 +23,10 @@ exports.saveBSPIssuance = async () => {
       bsp_arr: z.array(bspSchema).describe(`list of objects in list B`),
     }),
     func: async ({ bsp_arr }) => {
-        console.log('bsp_arr', bsp_arr)
+        console.log('saveBSPIssuance', bsp_arr)
         if(bsp_arr && bsp_arr.length === 0) {
           return `There are no new bsp issuances to save in the database.`
         }
-
         for(var i in bsp_arr) {
           if(bsp_arr[i].number && bsp_arr[i].number.length < 4) {
             continue
@@ -38,6 +37,7 @@ exports.saveBSPIssuance = async () => {
           try {
             await BSPRegulations.create(bsp_arr[i].number, 'BSP_ISSUANCE', bsp_arr[i].date_issued, bsp_arr[i].subject, bsp_arr[i].url)
           } catch(e) {
+            console.log(e)
             continue
           }
           return `All new bsp issuances with correct values are saved to the database.`
