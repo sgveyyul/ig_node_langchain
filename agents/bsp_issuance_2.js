@@ -46,26 +46,39 @@ exports.bsp_agent_2 = async() => {
 		url = "https://www.bsp.gov.ph/SitePages/Regulations/RegulationsList.aspx?TabId=1"
 		const rawDocs = await load_webpage(url)
 
-		const splitted_docs = await split_docs(rawDocs)
+		const splitted_docs_html_text = await split_docs(rawDocs.docHTMLText)
+		const splitted_docs_html_contents = await split_docs(rawDocs.docHTMLContent)
 
-		const vectorstore = await MemoryVectorStore.fromDocuments(
-			splitted_docs,
+		const text_vectorstore = await MemoryVectorStore.fromDocuments(
+			splitted_docs_html_text,
+			embeddingsModel
+		);
+		const htmlContent_vectorestore = await MemoryVectorStore.fromDocuments(
+			splitted_docs_html_contents,
 			embeddingsModel
 		);
 
-		const retriever = vectorstore.asRetriever(20);
+		const text_retriever = text_vectorstore.asRetriever(10);
+		const html_content_retriever = htmlContent_vectorestore.asRetriever(20);
 
 		const MEMORY_KEY = "chat_history";
 		const chatHistory = [];
 				
-		const bspIssuanceRetrieverTool = createRetrieverTool(retriever, {
+		const bspIssuanceRetrieverTextTool = createRetrieverTool(text_retriever, {
+			name: "bsp_issuance_search",
+			description:
+				"If you want to get values of bsp issuances, use this tool",
+		});
+
+    const bspIssuanceRetrieverHTMLContentTool= createRetrieverTool(html_content_retriever, {
 			name: "bsp_issuance_search",
 			description:
 				"If you have questions regarding bsp issuances, use this tool",
 		});
 
 		const tools = [
-			bspIssuanceRetrieverTool,
+			bspIssuanceRetrieverTextTool,
+      bspIssuanceRetrieverHTMLContentTool
 			await sendEmailTool(),
 			await saveBSPIssuance()
 		];
@@ -202,13 +215,11 @@ const load_webpage = async(url) => {
 		await page.goto(url, { waitUntil: 'networkidle2', timeout: 60000 })
 		
 		await page.waitForSelector('#RegTable', { visible: true, timeout: 60000 });
-		const htmlContent = await page.evaluate(() => document.body.outerHTML);
-		const bodyText = await page.evaluate(() => document.body.innerText);
+		const table = document.querySelector('#RegTable');
 		await browser.close()
-		const docHTMLContent = new Document({ pageContent: htmlContent, metadata: {source: url} });
-		const docHTMLText = new Document({ pageContent: bodyText, metadata: {source: url} });
-		return [docHTMLText, docHTMLContent, ]
-		// return htmlContent
+		const docHTMLContent = new Document({ pageContent: table, metadata: {source: url} });
+		// const docHTMLText = new Document({ pageContent: bodyText, metadata: {source: url} });
+		return docHTMLContent
 	} catch(e) {
 		console.log(e)
 	}
