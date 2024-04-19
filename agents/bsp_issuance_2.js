@@ -103,14 +103,21 @@ exports.bsp_agent_2 = async() => {
 		chatHistory.push(new AIMessage(result1.output));
 
 
-    const input2 = `Can you compare list A to the existing bsp issuances in the database. Check if there are bsp issuances in list A that are not in the databse.
-    If there are, can we add it to list B.`
+    const input2 = `Can you compare list A to the existing bsp issuances that we have. Check if there are bsp issuances in list A that we do not have yet.`
 		const result2 = await executorWithMemory.invoke({
 			input: input2,
 			chat_history: chatHistory
 		});
 		chatHistory.push(new HumanMessage(input2));
 		chatHistory.push(new AIMessage(result2.output));
+
+    const input4 = `Can you show list B.`
+		const result4 = await executorWithMemory.invoke({
+			input: input4,
+			chat_history: chatHistory
+		});
+		chatHistory.push(new HumanMessage(input2));
+		chatHistory.push(new AIMessage(result4.output));
 
 		const input3 = `
       Can you do the following:

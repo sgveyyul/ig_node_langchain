@@ -29,39 +29,11 @@ exports.getLatestBSPIssuance = async () => {
         !existing_bsp_issuances.data.some(b => b.number === a.number && b.date_issued === a.date_issued));
       console.log('uniqueInA', uniqueInA)
       if(uniqueInA && uniqueInA.length > 0) {
-        return `Here are the bsp issuance that are in list A ${JSON.stringify(uniqueInA, null, 2)} but not in our existing database.`
+        return `Here are the bsp issuance that are in list A ${JSON.stringify(uniqueInA, null, 2)} but not in our existing database. List these bsp issuances in list B.`
       } else {
         return `There are now new bsp issuances.`
       }
       
     }
   })
-}
-
-const send_email = async(to, subject, body) => {
-  try {
-    let transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST,
-      port: process.env.SMTP_PORT,
-      auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASSWORD,
-      }
-    });
-    
-    let info = await transporter.sendMail({
-      from: '"IntelliGo-noreply" <anderson.bondoc@ph.ey.com>',
-      to: to,
-      subject: subject,
-      html: body,
-    });
-
-    console.log('sendMail details: ', subject, info);
-    
-    return info;
-  } catch (error) {
-    console.error('Error sending email:', error);
-    console.error('Error sending email:', error.stack);
-    throw error; // You can rethrow the error to handle it in the calling code.
-  }
 }
