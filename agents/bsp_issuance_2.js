@@ -202,8 +202,17 @@ const load_webpage = async(url) => {
     // Extract data from the table
     const tableData = await page.evaluate(() => {
       const table = document.querySelector('#RegTable');
-      return table ? table.innerHTML : '';
-    })
+      const rows = table.querySelectorAll('tbody  tr');
+      return Array.from(rows, row => {
+        const cells = row.querySelectorAll('td');
+        return {
+            number: cells[0].innerText.trim(),
+            dateIssued: cells[1].innerText.trim(),
+            subject: cells[2].innerText.trim(),
+            link: cells[0].querySelector('a').href
+        };
+      });
+    });
 		
 		await browser.close()
 		const docHTMLContent = new Document({ pageContent: tableData, metadata: {source: url} });
