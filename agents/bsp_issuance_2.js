@@ -194,14 +194,14 @@ const load_webpage = async(url) => {
 	try{
     console.log('Loading web page.')
 		const browser = await puppeteer.launch({
-			headless: false,
+			headless: true,
 			args: ["--no-sandbox", "--disable-setuid-sandbox"],
 			'ignoreHTTPSErrors': true
 		});
 		const page = await browser.newPage();
 		await page.goto(url, { waitUntil: 'networkidle2', timeout: 60000 })
 		
-		await page.waitForSelector('#RegTable', { timeout: 60000 });
+		await page.waitForSelector('#RegTable', { visible: true, timeout: 60000 });
 		const htmlContent = await page.evaluate(() => document.body.outerHTML);
 		const bodyText = await page.evaluate(() => document.body.innerText);
 		await browser.close()
