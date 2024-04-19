@@ -207,7 +207,7 @@ const load_webpage = async(url) => {
 		await browser.close()
 		const docHTMLContent = new Document({ pageContent: htmlContent, metadata: {source: url} });
 		const docHTMLText = new Document({ pageContent: bodyText, metadata: {source: url} });
-		return [docHTMLContent, docHTMLText]
+		return [docHTMLText, docHTMLContent, ]
 		// return htmlContent
 	} catch(e) {
 		console.log(e)
