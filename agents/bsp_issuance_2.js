@@ -201,7 +201,7 @@ const load_webpage = async(url) => {
 		const page = await browser.newPage();
 		await page.goto(url, { waitUntil: 'networkidle2', timeout: 60000 })
 		
-		await page.waitForSelector('#RegTable_wrapper', { timeout: 60000 });
+		await page.waitForSelector('#RegTable', { timeout: 60000 });
 		const htmlContent = await page.evaluate(() => document.body.outerHTML);
 		const bodyText = await page.evaluate(() => document.body.innerText);
 		await browser.close()
