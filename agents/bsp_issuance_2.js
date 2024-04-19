@@ -129,8 +129,8 @@ exports.bsp_agent_2 = async() => {
     
     // const input3 = `Can you compare list A and B by their number and date issued, and get the elements that are in list A but not in list B.
 		// Create a list of objects for these elements and add it to List C.`
-    const input3 = `Can you compare list A's elements and list B's elements. Each of list A and B's elements have Number, Date issued, Subject and url. Can you check the
-    values of list A if its already in list B. If it is not in list B, create a List C and this element to list C.`
+    const input3 = `Can you compare list A and B by their number and date issued, and get the elements that are in list A but not in list B.
+		  Create a list of objects for these elements and add it to List C.`
     const result3 = await executorWithMemory.invoke({
       input: input3,
       chat_history: chatHistory
