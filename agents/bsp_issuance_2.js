@@ -28,6 +28,7 @@ const { OpenAIFunctionsAgentOutputParser } = require("langchain/agents/openai/ou
 
 const { sendEmailTool } = require('./tools/send_email')
 const { saveBSPIssuance } = require('./tools/save_bsp_issuance')
+const { getLatestBSPIssuance } = require('./tools/getLatestBSPIssuance')
 
 const BSPRegulations = require('../models/bsp_issuance');
 
@@ -61,6 +62,7 @@ exports.bsp_agent_2 = async() => {
 		// });
 
 		const tools = [
+      await getLatestBSPIssuance(),
 			await sendEmailTool(),
 			await saveBSPIssuance()
 		];
@@ -100,30 +102,31 @@ exports.bsp_agent_2 = async() => {
 		chatHistory.push(new HumanMessage(input1));
 		chatHistory.push(new AIMessage(result1.output));
 
-    const input2 = `Can you compare list A to the existing bsp issuances we have?`
+
+    const input2 = `Can you compare list A to the existing bsp issuances in the database and check if there are new issuances in list A.
+    If there are, can we add it to list B.`
 		const result2 = await executorWithMemory.invoke({
 			input: input2,
 			chat_history: chatHistory
 		});
 		chatHistory.push(new HumanMessage(input2));
 		chatHistory.push(new AIMessage(result2.output));
-    
-		// const input5 = `
-		// 	Can you do the following:
-    //   1. Based on your comparison, is list C empty or not?
-		// 	2. Can you send it on an email to yul.stewart.gurrea@ph.ey.com.
-		// 	3. The subject would be Latest BSP Issuance.
-		// 	4. For the body of the email, can you create a simple html for List C, strictly in table form with borders inside and out.
-		// 	Alignment should be left. 
-		// 	On the bottom of this, please include where you got the information from. Use this ${url}. 
-		// 	Then end the email with a thank you. Only send the email if the latest issued date on the bsp list is equal to today.
-		// `
-		// const result5 = await executorWithMemory.invoke({
-		// 	input: input5,
-		// 	chat_history: chatHistory
-		// });
-		// chatHistory.push(new HumanMessage(input5));
-		// chatHistory.push(new AIMessage(result5.output));
+
+		const input3 = `
+      If list B is not empty, can you do the following:
+			1. Can you send it on an email to yul.stewart.gurrea@ph.ey.com.
+			2. The subject would be Latest BSP Issuance.
+			3. For the body of the email, can you create a simple html for List C, strictly in table form with borders inside and out.
+			Alignment should be left. 
+			On the bottom of this, please include where you got the information from. Use this ${url}. 
+			Then end the email with a thank you. Only send the email if the latest issued date on the bsp list is equal to today.
+		`
+		const result3 = await executorWithMemory.invoke({
+			input: input3,
+			chat_history: chatHistory
+		});
+		chatHistory.push(new HumanMessage(input3));
+		chatHistory.push(new AIMessage(result3.output));
 
 		// const input6 = `
 		// 	If list C is not empty, can you save list C on the database. The keys of the objects are
