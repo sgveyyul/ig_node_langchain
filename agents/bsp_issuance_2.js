@@ -45,6 +45,9 @@ exports.bsp_agent_2 = async() => {
 	try {
 		url = "https://www.bsp.gov.ph/SitePages/Regulations/RegulationsList.aspx?TabId=1"
 		const web_bsp_issuances = await load_webpage(url)
+    if(web_bsp_issuances.code === 1) {
+      return web_bsp_issuances
+    }
 		// const splitted_docs = await split_docs(rawDocs)
 		// const vectorstore = await MemoryVectorStore.fromDocuments(
 		// 	splitted_docs,
@@ -171,7 +174,7 @@ exports.bsp_agent_2 = async() => {
 	} catch(e) {
 		return {
 			code: 1,
-			error: e
+			msg: e
 		}
 	}
 }
@@ -186,6 +189,14 @@ const load_webpage = async(url) => {
 		});
 		const page = await browser.newPage();
 		await page.goto(url, { waitUntil: 'networkidle2', timeout: 60000 })
+
+    if (response.status() !== 200) {
+      return {
+        code: 1,
+        msg: `Unable to reach website. Status: ${response.status()}`
+      }
+    }
+
 		await page.waitForSelector('#RegTable', { visible: true, timeout: 60000 });
 
     // Extract data from the table
@@ -205,9 +216,15 @@ const load_webpage = async(url) => {
 		
 		await browser.close()
 		// const docHTMLContent = new Document({ pageContent: `${JSON.stringify(tableData, null, 2)}`, metadata: {source: url} });
-		return tableData
+		return {
+      code: 0,
+      data: tableData
+    }
 	} catch(e) {
-		console.log(e)
+		return {
+      code: 1,
+      msg: `Error ${e}`
+    }
 	}
 	
 }
