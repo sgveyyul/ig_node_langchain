@@ -111,22 +111,27 @@ exports.bsp_agent_2 = async() => {
 		chatHistory.push(new HumanMessage(input2));
 		chatHistory.push(new AIMessage(result2.output));
 
-    const input4 = `Can you show list B.`
-		const result4 = await executorWithMemory.invoke({
-			input: input4,
+    const input3 = `Can you show list B.`
+		const result3 = await executorWithMemory.invoke({
+			input: input3,
 			chat_history: chatHistory
 		});
-		chatHistory.push(new HumanMessage(input4));
-		chatHistory.push(new AIMessage(result4.output));
+		chatHistory.push(new HumanMessage(input3));
+		chatHistory.push(new AIMessage(result3.output));
 
-		const input3 = `
+		const input4 = `
       Can you do the following:
 			1. Can you send it on an email to yul.stewart.gurrea@ph.ey.com.
 			2. The subject would be Latest BSP Issuance.
 			3. For the body of the emailcan you create a simple html. Can you start it with a Hello Good Day, Here is a list of new BSP Issuance. 
       Followed by List B. List B should strictltrictly in table format.
       example of the table format is
-      <table>
+      <style>
+        table, th, td {
+          border:1px solid black;
+        }
+      </style>
+      <table style='width:100%;'>
         <tr>
           <th>Number</th>
           <th>Date Issued</th>
@@ -144,12 +149,12 @@ exports.bsp_agent_2 = async() => {
 			On the bottom of this, please include where you got the information from. Use this ${url}. 
 			Then end the email with a thank you. Only send the email if the latest issued date on the bsp list is equal to today.
 		`
-		const result3 = await executorWithMemory.invoke({
-			input: input3,
+		const result4 = await executorWithMemory.invoke({
+			input: input4,
 			chat_history: chatHistory
 		});
-		chatHistory.push(new HumanMessage(input3));
-		chatHistory.push(new AIMessage(result3.output));
+		chatHistory.push(new HumanMessage(input4));
+		chatHistory.push(new AIMessage(result4.output));
 
 		// const input6 = `
 		// 	If list C is not empty, can you save list C on the database. The keys of the objects are

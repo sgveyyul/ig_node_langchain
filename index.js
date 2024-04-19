@@ -26,8 +26,8 @@ app.use(cookieParser());
 
 const port = process.env.PORT || 8000;
 
-// app.use('/api/v1', uploadRoutes);
-// app.use('/api/v1', gptRoutes);
+app.use('/api/v1', uploadRoutes);
+app.use('/api/v1', gptRoutes);
 
 run_cron()
 
