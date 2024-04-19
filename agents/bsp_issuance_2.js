@@ -45,40 +45,26 @@ exports.bsp_agent_2 = async() => {
     const existing_bsp = await BSPRegulations.listAll()
 		url = "https://www.bsp.gov.ph/SitePages/Regulations/RegulationsList.aspx?TabId=1"
 		const rawDocs = await load_webpage(url)
-
-		const splitted_docs_html_text = await split_docs(rawDocs.docHTMLText)
-		const splitted_docs_html_contents = await split_docs(rawDocs.docHTMLContent)
-
-		const text_vectorstore = await MemoryVectorStore.fromDocuments(
-			splitted_docs_html_text,
+		const splitted_docs = await split_docs(rawDocs)
+		const vectorstore = await MemoryVectorStore.fromDocuments(
+			splitted_docs,
 			embeddingsModel
 		);
-		const htmlContent_vectorestore = await MemoryVectorStore.fromDocuments(
-			splitted_docs_html_contents,
-			embeddingsModel
-		);
-
-		const text_retriever = text_vectorstore.asRetriever(10);
-		const html_content_retriever = htmlContent_vectorestore.asRetriever(20);
+		const retriever = vectorstore.asRetriever(10);
 
 		const MEMORY_KEY = "chat_history";
 		const chatHistory = [];
 				
-		const bspIssuanceRetrieverTextTool = createRetrieverTool(text_retriever, {
+		const bspIssuanceRetrieverTool = createRetrieverTool(retriever, {
 			name: "bsp_issuance_search",
 			description:
 				"If you want to get values of bsp issuances, use this tool",
 		});
 
-    const bspIssuanceRetrieverHTMLContentTool= createRetrieverTool(html_content_retriever, {
-			name: "bsp_issuance_search",
-			description:
-				"If you have questions regarding bsp issuances, use this tool",
-		});
+    
 
 		const tools = [
-			bspIssuanceRetrieverTextTool,
-      bspIssuanceRetrieverHTMLContentTool
+			bspIssuanceRetrieverTool,
 			await sendEmailTool(),
 			await saveBSPIssuance()
 		];
