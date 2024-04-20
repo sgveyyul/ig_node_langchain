@@ -63,6 +63,7 @@ create = async (number, category, date_issued, subject, url) => {
     }
   })
   .catch(async (err) => {
+    console.log('create', err)
     return {
       code: 1,
       success: false,
@@ -85,7 +86,7 @@ listAll = async () => {
       }
     })
     .catch(async (err) => {
-      console.log(err)
+      console.log('listAll', err)
       return {
         code: 1,
         success: false,
@@ -109,6 +110,7 @@ list = async (condition) => {
       }
     })
     .catch(async (err) => {
+      console.log('list', err)
       return {
         code: 1,
         success: false,
