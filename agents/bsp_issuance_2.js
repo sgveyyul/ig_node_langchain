@@ -32,6 +32,8 @@ const { getLatestBSPIssuance } = require('./tools/getLatestBSPIssuance')
 
 const BSPRegulations = require('../models/bsp_issuance');
 
+const { DynamicStructuredTool } = require("@langchain/core/tools");
+
 const now = new Date().toISOString().split('T')[0];
 
 process.env['OPENAI_API_KEY'] = process.env.OPENAI_API_KEY
@@ -66,7 +68,28 @@ exports.bsp_agent_2 = async() => {
 		// });
 
 		const tools = [
-      await getLatestBSPIssuance(chatHistory),
+      // await getLatestBSPIssuance(),
+      new DynamicStructuredTool({
+        name: "get-latest-bsp-issuance",
+        description: "compare scraped list with database and check if there are new bsp issuances.",
+        schema: z.object({
+          bsp_arr: z.array(bspSchema).describe(`BSP issuances in scraped list`)
+        }),
+        func: async ({ bsp_arr }) => {
+          console.log('bsp_arr', bsp_arr)
+          const existing_bsp_issuances = await BSPRegulations.listAll()
+          console.log('existing_bsp_issuances', existing_bsp_issuances.data)
+          const uniqueInA = bsp_arr.filter(a => 
+            !existing_bsp_issuances.data.some(b => b.number === a.number && b.date_issued === a.date_issued));
+          console.log('uniqueInA', uniqueInA)
+          if(uniqueInA && uniqueInA.length > 0) {
+            return `Here are the list of new bsp issuances ${JSON.stringify(uniqueInA, null, 2)}.`
+          } else {
+            return `There are no new bsp issuances.`
+          }
+          
+        }
+      }),
 			await sendEmailTool(),
 			await saveBSPIssuance()
 		];

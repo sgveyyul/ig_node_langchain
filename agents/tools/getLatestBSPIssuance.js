@@ -4,8 +4,6 @@ const nodemailer = require('nodemailer');
 const { z } = require("zod");
 const { DynamicStructuredTool } = require("@langchain/core/tools");
 
-const { HumanMessage, AIMessage } = require("@langchain/core/messages");
-
 const BSPRegulations = require('../../models/bsp_issuance');
 
 const _ = require('lodash');
@@ -17,7 +15,7 @@ const bspSchema = z.object({
   url: z.string().describe(`the url link of the bsp list`)
 });
 
-exports.getLatestBSPIssuance = async (chatHistory) => {
+exports.getLatestBSPIssuance = async () => {
   return new DynamicStructuredTool({
     name: "get-latest-bsp-issuance",
     description: "compare scraped list with database and check if there are new bsp issuances.",
