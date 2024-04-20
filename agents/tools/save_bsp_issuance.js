@@ -20,30 +20,30 @@ exports.saveBSPIssuance = async () => {
     name: "save-bsp-issuance",
     description: "If you want to save new bsp issuances in the database, use this tool.",
     schema: z.object({
-      bsp_arr: z.array(bspSchema).describe(`list of new bsp issuances.`),
+      bsp_arr: z.array(bspSchema).describe(`list of all new bsp issuances in conversation.`),
     }),
     func: async ({ bsp_arr }) => {
-        console.log('saveBSPIssuance', bsp_arr)
-        if(bsp_arr && bsp_arr.length === 0) {
-          return `There are no new bsp issuances to save in the database.`
+      console.log('saveBSPIssuance', bsp_arr)
+      if(bsp_arr && bsp_arr.length === 0) {
+        return `There are no new bsp issuances to save in the database.`
+      }
+      for(var i in bsp_arr) {
+        if(bsp_arr[i].number && bsp_arr[i].number.length < 4) {
+          console.log('number issue')
+          continue
         }
-        for(var i in bsp_arr) {
-          if(bsp_arr[i].number && bsp_arr[i].number.length < 4) {
-            console.log('number issue')
-            continue
-          }
-          if(bsp_arr[i].date_issued && !regex.test(bsp_arr[i].date_issued )) {
-            console.log('date issue')
-            continue
-          }
-          try {
-            await BSPRegulations.create(bsp_arr[i].number, 'BSP_ISSUANCE', bsp_arr[i].date_issued, bsp_arr[i].subject, bsp_arr[i].url)
-          } catch(e) {
-            console.log(e)
-            continue
-          }
+        if(bsp_arr[i].date_issued && !regex.test(bsp_arr[i].date_issued )) {
+          console.log('date issue')
+          continue
         }
-        return `All new bsp issuances with correct values are saved to the database.`
+        try {
+          await BSPRegulations.create(bsp_arr[i].number, 'BSP_ISSUANCE', bsp_arr[i].date_issued, bsp_arr[i].subject, bsp_arr[i].url)
+        } catch(e) {
+          console.log(e)
+          continue
+        }
+      }
+      return `All new bsp issuances with correct values are saved to the database.`
     }
   })
 }
