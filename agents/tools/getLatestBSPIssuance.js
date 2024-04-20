@@ -18,7 +18,7 @@ const bspSchema = z.object({
 exports.getLatestBSPIssuance = async () => {
   return new DynamicStructuredTool({
     name: "get-latest-bsp-issuance",
-    description: "If you want to get the latest issuance, use this tool.",
+    description: "compare scraped object list to the database to check if there latest bsp issuance.",
     schema: z.object({
       bsp_arr: z.array(bspSchema).describe(`BSP issuances in list A`)
     }),
