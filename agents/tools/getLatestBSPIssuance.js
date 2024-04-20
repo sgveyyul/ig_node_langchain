@@ -32,7 +32,7 @@ exports.getLatestBSPIssuance = async () => {
       if(uniqueInA && uniqueInA.length > 0) {
         return `Here are the new bsp issuances ${JSON.stringify(uniqueInA, null, 2)}. Add this new bsp issuances in a list called new bsp issuances.`
       } else {
-        return `There are now new bsp issuances.`
+        return `There are no new bsp issuances.`
       }
       
     }
