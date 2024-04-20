@@ -106,24 +106,7 @@ exports.bsp_agent_2 = async() => {
 		chatHistory.push(new HumanMessage(input1));
 		chatHistory.push(new AIMessage(result1.output));
 
-
-    // const input2 = `Can you compare list A to the existing bsp issuances that we have. I want to get the list of latest bsp issuance.`
-		// const result2 = await executorWithMemory.invoke({
-		// 	input: input2,
-		// 	chat_history: chatHistory
-		// });
-		// chatHistory.push(new HumanMessage(input2));
-		// chatHistory.push(new AIMessage(result2.output));
-
-    const input3 = `Can you show list B.`
-		const result3 = await executorWithMemory.invoke({
-			input: input3,
-			chat_history: chatHistory
-		});
-		chatHistory.push(new HumanMessage(input3));
-		chatHistory.push(new AIMessage(result3.output));
-
-		const input4 = `
+		const input2 = `
       Can you do the following:
 			1. Can you send it on an email to yul.stewart.gurrea@ph.ey.com.
 			2. The subject would be Latest BSP Issuance.
@@ -153,20 +136,20 @@ exports.bsp_agent_2 = async() => {
 			On the bottom of this, please include where you got the information from. Use this ${url}. 
 			Then end the email with a thank you. Only send the email if the latest issued date on the bsp list is equal to today.
 		`
-		const result4 = await executorWithMemory.invoke({
-			input: input4,
+		const result2 = await executorWithMemory.invoke({
+			input: input2,
 			chat_history: chatHistory
 		});
-		chatHistory.push(new HumanMessage(input4));
-		chatHistory.push(new AIMessage(result4.output));
+		chatHistory.push(new HumanMessage(input2));
+		chatHistory.push(new AIMessage(result2.output));
 
-		const input5 = `Can you save list B in the database.`
-		const result5 = await executorWithMemory.invoke({
-			input: input5,
+		const input3 = `Can you save list B in the database.`
+		const result3 = await executorWithMemory.invoke({
+			input: input3,
 			chat_history: chatHistory
 		});
-		chatHistory.push(new HumanMessage(input5));
-		chatHistory.push(new AIMessage(result5.output));
+		chatHistory.push(new HumanMessage(input3));
+		chatHistory.push(new AIMessage(result3.output));
     console.log(chatHistory)
 		return {
 			code: 0,
