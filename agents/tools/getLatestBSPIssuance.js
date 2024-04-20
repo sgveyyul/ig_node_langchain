@@ -18,9 +18,9 @@ const bspSchema = z.object({
 exports.getLatestBSPIssuance = async () => {
   return new DynamicStructuredTool({
     name: "get-latest-bsp-issuance",
-    description: "compare scraped object list to the database to check if there latest bsp issuance.",
+    description: "compare scraped list with database and check if there are new bsp issuances.",
     schema: z.object({
-      bsp_arr: z.array(bspSchema).describe(`BSP issuances in list A`)
+      bsp_arr: z.array(bspSchema).describe(`BSP issuances in scraped list`)
     }),
     func: async ({ bsp_arr }) => {
       console.log('bsp_arr', bsp_arr)
@@ -29,7 +29,7 @@ exports.getLatestBSPIssuance = async () => {
         !existing_bsp_issuances.data.some(b => b.number === a.number && b.date_issued === a.date_issued));
       console.log('uniqueInA', uniqueInA)
       if(uniqueInA && uniqueInA.length > 0) {
-        return `Here are the bsp issuance that are in list A ${JSON.stringify(uniqueInA, null, 2)} but not in our existing database. List these bsp issuances in list B.`
+        return `Here are the new bsp issuances ${JSON.stringify(uniqueInA, null, 2)}. Add this new bsp issuances in a list called new bsp issuances.`
       } else {
         return `There are now new bsp issuances.`
       }
