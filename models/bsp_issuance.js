@@ -98,8 +98,7 @@ listAll = async () => {
 list = async (condition) => {
   return await BSPRegulations.findAll({
     where: condition,
-    order: [['date_issued', 'DESC']],
-		limit: 10
+    order: [['date_issued', 'DESC']]
   })
     .then(async (result) => {
       return {
