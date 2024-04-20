@@ -27,7 +27,7 @@ exports.sendEmailTool = async () => {
       }),
       func: async ({ to, subject, body, bsp_arr }) => {
         // validate data
-        console.log('bsp_arr', bsp_arr)
+        console.log('sendEmailTool', bsp_arr)
         if(bsp_arr && bsp_arr.length > 0) {
           for(var i in bsp_arr) {
             if(bsp_arr[i].number && bsp_arr[i].number.length < 4) {
