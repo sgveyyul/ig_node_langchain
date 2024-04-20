@@ -42,8 +42,8 @@ exports.saveBSPIssuance = async () => {
             console.log(e)
             continue
           }
-          return `All new bsp issuances with correct values are saved to the database.`
         }
+        return `All new bsp issuances with correct values are saved to the database.`
     }
   })
 }
