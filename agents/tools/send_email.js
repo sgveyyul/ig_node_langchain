@@ -25,7 +25,7 @@ exports.sendEmailTool = async () => {
         to: z.string().array().describe("array of user emails we will send out to"),
         subject: z.string().describe("the subject of the email"),
         body: z.string().describe("the message of the email"),
-        bsp_arr: z.array(bspSchema).describe(`list of objects of new bsp issuances.`)
+        bsp_arr: z.array(bspSchema).describe(`list of new bsp issuances.`)
       }),
       func: async ({ to, subject, body, bsp_arr }) => {
         // validate data
