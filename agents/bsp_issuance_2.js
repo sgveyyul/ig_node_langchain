@@ -32,6 +32,7 @@ const { getLatestBSPIssuance } = require('./tools/getLatestBSPIssuance')
 
 const BSPRegulations = require('../models/bsp_issuance');
 
+const { z } = require("zod");
 const { DynamicStructuredTool } = require("@langchain/core/tools");
 
 const now = new Date().toISOString().split('T')[0];
