@@ -111,7 +111,7 @@ exports.bsp_agent_2 = async() => {
 			1. Can you send it on an email to yul.stewart.gurrea@ph.ey.com.
 			2. The subject would be Latest BSP Issuance.
 			3. For the body of the email, can you create a simple html. Can you start it with a Greetings from Intelligo then followed by Here is a list of new BSP Issuance. 
-      Followed by List B. List B should strictltrictly in table format.
+      Followed by the list of new bsp issuances. New bsp issuances should strictly in table format.
       example of the table format is
       <style>
         table, th, td {
@@ -143,7 +143,7 @@ exports.bsp_agent_2 = async() => {
 		chatHistory.push(new HumanMessage(input2));
 		chatHistory.push(new AIMessage(result2.output));
 
-		const input3 = `Can you save list B in the database.`
+		const input3 = `Can you save the list of new bsp issuances in the database.`
 		const result3 = await executorWithMemory.invoke({
 			input: input3,
 			chat_history: chatHistory
