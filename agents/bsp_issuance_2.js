@@ -74,7 +74,9 @@ exports.bsp_agent_2 = async() => {
       subject: z.string().describe(`the subject of the bsp issuance`),
       url: z.string().describe(`the url link of the bsp list`)
     });
-    
+
+    const regex = /^\d{4}-\d{2}-\d{2}$/;
+
 		const tools = [
       // await getLatestBSPIssuance(),
       new DynamicStructuredTool({
@@ -95,11 +97,69 @@ exports.bsp_agent_2 = async() => {
           } else {
             return `There are no new bsp issuances.`
           }
-          
         }
       }),
-			await sendEmailTool(),
-			await saveBSPIssuance()
+			new DynamicStructuredTool({
+        name: "send-email",
+        description: "if you want to send an email to a user, user this tool.",
+        schema: z.object({
+          to: z.string().array().describe("array of user emails we will send out to"),
+          subject: z.string().describe("the subject of the email"),
+          body: z.string().describe("the message of the email"),
+          bsp_arr: z.array(bspSchema).describe(`list of all new bsp issuances in conversation.`)
+        }),
+        func: async ({ to, subject, body, bsp_arr }) => {
+          // validate data
+          console.log('sendEmailTool', bsp_arr)
+          if(bsp_arr && bsp_arr.length > 0) {
+            for(var i in bsp_arr) {
+              if(bsp_arr[i].number && bsp_arr[i].number.length < 4) {
+                return `I encountered an error when validating the data. No email was sent.`
+              }
+              if(bsp_arr[i].date_issued && !regex.test(bsp_arr[i].date_issued )) {
+                return `I encountered an error when validating the data. No email was sent.`
+              }
+            }
+            
+            for(var i in to) {
+              await send_email(to[i], subject, body)
+            }
+            return `The email was sent successfully.`
+          } else {
+            return `No email was sent since there are no new bsp issuances.`
+          }
+        }
+      }),
+			new DynamicStructuredTool({
+        name: "save-bsp-issuance",
+        description: "If you want to save new bsp issuances in the database, use this tool.",
+        schema: z.object({
+          bsp_arr: z.array(bspSchema).describe(`list of all new bsp issuances in conversation.`),
+        }),
+        func: async ({ bsp_arr }) => {
+          console.log('saveBSPIssuance', bsp_arr)
+          if(bsp_arr && bsp_arr.length === 0) {
+            return `There are no new bsp issuances to save in the database.`
+          }
+          for(var i in bsp_arr) {
+            if(bsp_arr[i].number && bsp_arr[i].number.length < 4) {
+              console.log('number issue')
+              continue
+            }
+            if(bsp_arr[i].date_issued && !regex.test(bsp_arr[i].date_issued )) {
+              console.log('date issue')
+              continue
+            }
+            try {
+              await BSPRegulations.create(bsp_arr[i].number, 'BSP_ISSUANCE', bsp_arr[i].date_issued, bsp_arr[i].subject, bsp_arr[i].url)
+            } catch(e) {
+              console.log(e)
+              continue
+            }
+          }
+          return `All new bsp issuances with correct values are saved to the database.`
+        }
+      })
 		];
 
 		const modelWithFunctions = chatOpenAImodel.bind({
