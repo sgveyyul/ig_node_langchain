@@ -68,6 +68,13 @@ exports.bsp_agent_2 = async() => {
 		// 		"If you want to get values of bsp issuances, use this tool",
 		// });
 
+    const bspSchema = z.object({
+      number: z.string().describe(`the number of the bsp issuance`),
+      date_issued: z.string().describe(`the issued date of the bsp issuance`),
+      subject: z.string().describe(`the subject of the bsp issuance`),
+      url: z.string().describe(`the url link of the bsp list`)
+    });
+    
 		const tools = [
       // await getLatestBSPIssuance(),
       new DynamicStructuredTool({
