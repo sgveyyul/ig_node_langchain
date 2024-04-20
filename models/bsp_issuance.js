@@ -74,8 +74,7 @@ create = async (number, category, date_issued, subject, url) => {
 
 listAll = async () => {
   return await BSPRegulations.findAll({
-    order: [['date_issued', 'DESC']],
-		limit: 10
+    order: [['date_issued', 'DESC']]
   })
     .then(async (result) => {
       return {
