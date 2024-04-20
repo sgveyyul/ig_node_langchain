@@ -16,6 +16,8 @@ const bspSchema = z.object({
 
 exports.sendEmailTool = async () => {
   try {
+    const regex = /^\d{4}-\d{2}-\d{2}$/;
+    
     return new DynamicStructuredTool({
       name: "send-email",
       description: "if you want to send an email to a user, user this tool.",
