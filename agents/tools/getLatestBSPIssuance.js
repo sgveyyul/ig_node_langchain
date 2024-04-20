@@ -26,6 +26,7 @@ exports.getLatestBSPIssuance = async () => {
       console.log('bsp_arr', bsp_arr)
       const existing_bsp_issuances = await BSPRegulations.listAll()
       if(existing_bsp_issuances.data.length === 0) {
+        console.log('existing_bsp_issuances', existing_bsp_issuances)
         return `Here are the new bsp issuances ${JSON.stringify(bsp_arr, null, 2)}.`
       }
       console.log('existing_bsp_issuances', existing_bsp_issuances.data)
