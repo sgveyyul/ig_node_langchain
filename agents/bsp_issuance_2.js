@@ -98,7 +98,7 @@ exports.bsp_agent_2 = async() => {
 			tools,
 		});
 
-		const input1 = `I have scraped a list of objects ${JSON.stringify(web_bsp_issuances, null, 2)}. Lets call this list A. 
+		const input1 = `I have scraped a list of objects ${JSON.stringify(web_bsp_issuances.data, null, 2)}. Lets call this list A. 
       Can you compare list A to the existing bsp issuances that we have. I want to get the list of latest bsp issuance.`
 		const result1 = await executorWithMemory.invoke({
 			input: input1,
