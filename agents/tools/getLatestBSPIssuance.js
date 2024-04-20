@@ -4,6 +4,8 @@ const nodemailer = require('nodemailer');
 const { z } = require("zod");
 const { DynamicStructuredTool } = require("@langchain/core/tools");
 
+const { HumanMessage, AIMessage } = require("@langchain/core/messages");
+
 const BSPRegulations = require('../../models/bsp_issuance');
 
 const _ = require('lodash');
@@ -15,7 +17,7 @@ const bspSchema = z.object({
   url: z.string().describe(`the url link of the bsp list`)
 });
 
-exports.getLatestBSPIssuance = async () => {
+exports.getLatestBSPIssuance = async (chatHistory) => {
   return new DynamicStructuredTool({
     name: "get-latest-bsp-issuance",
     description: "compare scraped list with database and check if there are new bsp issuances.",
@@ -30,6 +32,7 @@ exports.getLatestBSPIssuance = async () => {
         !existing_bsp_issuances.data.some(b => b.number === a.number && b.date_issued === a.date_issued));
       console.log('uniqueInA', uniqueInA)
       if(uniqueInA && uniqueInA.length > 0) {
+        chatHistory.push(new AIMessage(`Here are the list of new bsp issuances ${JSON.stringify(uniqueInA, null, 2)}.`));
         return `Here are the list of new bsp issuances ${JSON.stringify(uniqueInA, null, 2)}.`
       } else {
         return `There are no new bsp issuances.`

@@ -66,7 +66,7 @@ exports.bsp_agent_2 = async() => {
 		// });
 
 		const tools = [
-      await getLatestBSPIssuance(),
+      await getLatestBSPIssuance(chatHistory),
 			await sendEmailTool(),
 			await saveBSPIssuance()
 		];
