@@ -29,9 +29,11 @@ exports.saveBSPIssuance = async () => {
         }
         for(var i in bsp_arr) {
           if(bsp_arr[i].number && bsp_arr[i].number.length < 4) {
+            console.log('number issue')
             continue
           }
           if(bsp_arr[i].date_issued && !regex.test(bsp_arr[i].date_issued )) {
+            console.log('date issue')
             continue
           }
           try {
