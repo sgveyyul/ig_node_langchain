@@ -85,6 +85,7 @@ listAll = async () => {
       }
     })
     .catch(async (err) => {
+      console.log(err)
       return {
         code: 1,
         success: false,
