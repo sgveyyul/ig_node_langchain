@@ -32,9 +32,6 @@ const { getLatestBSPIssuance } = require('./tools/getLatestBSPIssuance')
 
 const BSPRegulations = require('../models/bsp_issuance');
 
-const { z } = require("zod");
-const { DynamicStructuredTool } = require("@langchain/core/tools");
-
 const now = new Date().toISOString().split('T')[0];
 
 process.env['OPENAI_API_KEY'] = process.env.OPENAI_API_KEY
@@ -68,98 +65,10 @@ exports.bsp_agent_2 = async() => {
 		// 		"If you want to get values of bsp issuances, use this tool",
 		// });
 
-    const bspSchema = z.object({
-      number: z.string().describe(`the number of the bsp issuance`),
-      date_issued: z.string().describe(`the issued date of the bsp issuance`),
-      subject: z.string().describe(`the subject of the bsp issuance`),
-      url: z.string().describe(`the url link of the bsp list`)
-    });
-
-    const regex = /^\d{4}-\d{2}-\d{2}$/;
-
 		const tools = [
-      // await getLatestBSPIssuance(),
-      new DynamicStructuredTool({
-        name: "get-latest-bsp-issuance",
-        description: "compare scraped list with database and check if there are new bsp issuances.",
-        schema: z.object({
-          bsp_arr: z.array(bspSchema).describe(`BSP issuances in scraped list`)
-        }),
-        func: async ({ bsp_arr }) => {
-          console.log('bsp_arr', bsp_arr)
-          const existing_bsp_issuances = await BSPRegulations.listAll()
-          console.log('existing_bsp_issuances', existing_bsp_issuances.data)
-          const uniqueInA = bsp_arr.filter(a => 
-            !existing_bsp_issuances.data.some(b => b.number === a.number && b.date_issued === a.date_issued));
-          console.log('uniqueInA', uniqueInA)
-          if(uniqueInA && uniqueInA.length > 0) {
-            return `Here are the list of new bsp issuances ${JSON.stringify(uniqueInA, null, 2)}.`
-          } else {
-            return `There are no new bsp issuances.`
-          }
-        }
-      }),
-			new DynamicStructuredTool({
-        name: "send-email",
-        description: "if you want to send an email to a user, user this tool.",
-        schema: z.object({
-          to: z.string().array().describe("array of user emails we will send out to"),
-          subject: z.string().describe("the subject of the email"),
-          body: z.string().describe("the message of the email"),
-          bsp_arr: z.array(bspSchema).describe(`list of all new bsp issuances in conversation.`)
-        }),
-        func: async ({ to, subject, body, bsp_arr }) => {
-          // validate data
-          console.log('sendEmailTool', bsp_arr)
-          if(bsp_arr && bsp_arr.length > 0) {
-            for(var i in bsp_arr) {
-              if(bsp_arr[i].number && bsp_arr[i].number.length < 4) {
-                return `I encountered an error when validating the data. No email was sent.`
-              }
-              if(bsp_arr[i].date_issued && !regex.test(bsp_arr[i].date_issued )) {
-                return `I encountered an error when validating the data. No email was sent.`
-              }
-            }
-            
-            for(var i in to) {
-              await send_email(to[i], subject, body)
-            }
-            return `The email was sent successfully.`
-          } else {
-            return `No email was sent since there are no new bsp issuances.`
-          }
-        }
-      }),
-			new DynamicStructuredTool({
-        name: "save-bsp-issuance",
-        description: "If you want to save new bsp issuances in the database, use this tool.",
-        schema: z.object({
-          bsp_arr: z.array(bspSchema).describe(`list of all new bsp issuances in conversation.`),
-        }),
-        func: async ({ bsp_arr }) => {
-          console.log('saveBSPIssuance', bsp_arr)
-          if(bsp_arr && bsp_arr.length === 0) {
-            return `There are no new bsp issuances to save in the database.`
-          }
-          for(var i in bsp_arr) {
-            if(bsp_arr[i].number && bsp_arr[i].number.length < 4) {
-              console.log('number issue')
-              continue
-            }
-            if(bsp_arr[i].date_issued && !regex.test(bsp_arr[i].date_issued )) {
-              console.log('date issue')
-              continue
-            }
-            try {
-              await BSPRegulations.create(bsp_arr[i].number, 'BSP_ISSUANCE', bsp_arr[i].date_issued, bsp_arr[i].subject, bsp_arr[i].url)
-            } catch(e) {
-              console.log(e)
-              continue
-            }
-          }
-          return `All new bsp issuances with correct values are saved to the database.`
-        }
-      })
+      await getLatestBSPIssuance(),
+			await sendEmailTool(),
+			await saveBSPIssuance()
 		];
 
 		const modelWithFunctions = chatOpenAImodel.bind({
@@ -189,7 +98,7 @@ exports.bsp_agent_2 = async() => {
 			tools,
 		});
 
-		const input1 = `Can you check if there are new bsp issuances in this scraped list ${JSON.stringify(web_bsp_issuances.data, null, 2)}.`
+		const input1 = `Can you get the latest bsp issuances based on this scraped list ${JSON.stringify(web_bsp_issuances.data, null, 2)}.`
 		const result1 = await executorWithMemory.invoke({
 			input: input1,
 			chat_history: chatHistory
