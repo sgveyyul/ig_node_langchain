@@ -55,6 +55,7 @@ create = async (number, category, date_issued, subject, url) => {
     url: url
   })
   .then(async (result) => {
+    console.log('create', result)
     return {
       code: 0,
       success: true,
