@@ -98,7 +98,7 @@ exports.bsp_agent_2 = async() => {
 			tools,
 		});
 
-		const input1 = `I have a list of objects ${JSON.stringify(web_bsp_issuances, null, 2)}. Lets call this list A.`
+		const input1 = `I have scraped a list of objects ${JSON.stringify(web_bsp_issuances, null, 2)}. Lets call this list A.`
 		const result1 = await executorWithMemory.invoke({
 			input: input1,
 			chat_history: chatHistory
@@ -107,7 +107,7 @@ exports.bsp_agent_2 = async() => {
 		chatHistory.push(new AIMessage(result1.output));
 
 
-    const input2 = `Can you compare list A to the existing bsp issuances that we have. Check if there are bsp issuances in list A that we do not have yet.`
+    const input2 = `Can you compare list A to the existing bsp issuances that we have. I want to get the list of latest bsp issuance.`
 		const result2 = await executorWithMemory.invoke({
 			input: input2,
 			chat_history: chatHistory
